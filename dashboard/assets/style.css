@@ -1,0 +1,106 @@
+/* Main Dashboard Styles */
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f9f9fa;
+}
+
+/* Header Styles */
+.display-4 {
+    color: #1a73e8;
+    font-weight: 600;
+}
+
+.lead {
+    color: #5f6368;
+}
+
+/* Card Styles */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border: none;
+    transition: transform 0.2s;
+    margin-bottom: 20px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+    color: #5f6368;
+    font-weight: 600;
+}
+
+.card-header {
+    background-color: #f1f3f4;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-weight: 600;
+    color: #1a73e8;
+}
+
+/* Stats Card */
+.display-6 {
+    color: #1a73e8;
+}
+
+/* Tables */
+.dash-table-container {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.dash-spreadsheet {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
+}
+
+.dash-header {
+    background-color: #f1f3f4 !important;
+    font-weight: 600 !important;
+}
+
+/* Form Elements */
+.form-select, .form-control {
+    border-radius: 8px;
+    border: 1px solid #dadce0;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 0.2rem rgba(26, 115, 232, 0.25);
+}
+
+/* Radio Items */
+.radio-items label {
+    margin-right: 15px;
+    cursor: pointer;
+}
+
+/* Graphs */
+.js-plotly-plot {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* Footer */
+footer {
+    color: #5f6368;
+    font-size: 0.9rem;
+    margin-top: 50px;
+    padding-top: 20px;
+    border-top: 1px solid #dadce0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2rem;
+    }
+    
+    .card {
+        margin-bottom: 15px;
+    }
+}

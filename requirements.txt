@@ -1,0 +1,25 @@
+# Core dependencies
+apache-airflow==2.7.1
+sqlalchemy>=1.4.24,<2.0
+flask>=2.2,<2.3
+boto3==1.28.35
+google-api-python-client==2.97.0
+google-auth==2.22.0
+
+# Data processing
+pandas==2.1.0
+numpy==1.25.2
+
+# Visualization
+matplotlib==3.7.2
+seaborn==0.12.2
+dash==2.13.0
+plotly==5.16.1
+
+# Database
+psycopg2-binary==2.9.7
+
+# Utils
+pytest==7.4.0
+pyyaml==6.0.1
+python-dotenv==1.0.0
