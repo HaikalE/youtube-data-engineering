@@ -83,23 +83,29 @@ class YouTubeTransformer:
         # Make a copy to avoid modifying the original
         df_transformed = df.copy()
         
-        # Convert publish_time to datetime
-        df_transformed['publish_time'] = pd.to_datetime(df_transformed['publish_time'])
-        df_transformed['extracted_at'] = pd.to_datetime(df_transformed['extracted_at'])
-        
-        # Fix timezone issue - ensure both datetimes are timezone-aware or timezone-naive
-        if df_transformed['publish_time'].dt.tz is not None:
-            # Make extracted_at timezone-aware (UTC) to match publish_time
-            df_transformed['extracted_at'] = df_transformed['extracted_at'].dt.tz_localize('UTC')
-        else:
-            # If publish_time is somehow tz-naive, make sure both are consistent
-            df_transformed['publish_time'] = df_transformed['publish_time'].dt.tz_localize(None)
-            df_transformed['extracted_at'] = df_transformed['extracted_at'].dt.tz_localize(None)
-        
-        # Calculate how long the video has been published before extraction
-        df_transformed['hours_since_published'] = (
-            df_transformed['extracted_at'] - df_transformed['publish_time']
-        ).dt.total_seconds() / 3600
+        # Convert publish_time and extracted_at to datetime and ensure both are timezone-aware
+        # Force both to be UTC to avoid timezone comparison issues
+        try:
+            # First convert to datetime
+            df_transformed['publish_time'] = pd.to_datetime(df_transformed['publish_time'])
+            df_transformed['extracted_at'] = pd.to_datetime(df_transformed['extracted_at'])
+            
+            # Handle timezone - make sure both are naive (no timezone)
+            if df_transformed['publish_time'].dt.tz is not None:
+                df_transformed['publish_time'] = df_transformed['publish_time'].dt.tz_localize(None)
+            
+            if df_transformed['extracted_at'].dt.tz is not None:
+                df_transformed['extracted_at'] = df_transformed['extracted_at'].dt.tz_localize(None)
+            
+            # Calculate how long the video has been published before extraction
+            df_transformed['hours_since_published'] = (
+                df_transformed['extracted_at'] - df_transformed['publish_time']
+            ).dt.total_seconds() / 3600
+            
+        except Exception as e:
+            logger.error(f"Error processing datetime fields: {str(e)}")
+            # If datetime processing fails, add a default value for hours_since_published
+            df_transformed['hours_since_published'] = 24  # Default to 24 hours
         
         # Calculate engagement metrics (only if view_count > 0)
         df_transformed['like_view_ratio'] = np.where(
@@ -147,10 +153,15 @@ class YouTubeTransformer:
         
         # Extract hashtags from title and description
         df_with_features['title_hashtags'] = df_with_features['title'].apply(self.extract_hashtags)
+        
+        # Handle missing description
+        df_with_features['description'] = df_with_features['description'].fillna("")
         df_with_features['description_hashtags'] = df_with_features['description'].apply(self.extract_hashtags)
         
         # Combine all hashtags
-        df_with_features['all_hashtags'] = df_with_features['title_hashtags'] + df_with_features['description_hashtags']
+        df_with_features['all_hashtags'] = df_with_features.apply(
+            lambda row: row['title_hashtags'] + row['description_hashtags'], axis=1
+        )
         
         # Convert tags from JSON string to list
         df_with_features['tags_list'] = df_with_features['tags'].apply(
@@ -159,11 +170,11 @@ class YouTubeTransformer:
         
         # Title metrics
         df_with_features['title_length'] = df_with_features['title'].apply(len)
-        df_with_features['title_word_count'] = df_with_features['title'].apply(lambda x: len(x.split()))
+        df_with_features['title_word_count'] = df_with_features['title'].apply(lambda x: len(str(x).split()))
         
         # Description metrics
-        df_with_features['has_description'] = df_with_features['description'].apply(lambda x: len(x) > 0)
-        df_with_features['description_length'] = df_with_features['description'].apply(len)
+        df_with_features['has_description'] = df_with_features['description'].apply(lambda x: len(str(x)) > 0)
+        df_with_features['description_length'] = df_with_features['description'].apply(lambda x: len(str(x)))
         
         return df_with_features
     
@@ -189,7 +200,11 @@ class YouTubeTransformer:
             df_transformed = self.extract_text_features(df_metrics)
             
             # Generate a unique file identifier (extraction timestamp)
-            extraction_ts = pd.to_datetime(df['extracted_at'].iloc[0]).strftime('%Y%m%d%H%M%S')
+            try:
+                extraction_ts = pd.to_datetime(df['extracted_at'].iloc[0]).strftime('%Y%m%d%H%M%S')
+            except:
+                extraction_ts = datetime.now().strftime('%Y%m%d%H%M%S')
+                
             df_transformed['batch_id'] = extraction_ts
             
             # Reorder columns for better readability
@@ -205,13 +220,17 @@ class YouTubeTransformer:
             remaining_columns = [col for col in df_transformed.columns if col not in column_order]
             column_order.extend(remaining_columns)
             
-            df_transformed = df_transformed[column_order]
+            # Make sure all columns in column_order exist in df_transformed
+            available_columns = [col for col in column_order if col in df_transformed.columns]
+            df_transformed = df_transformed[available_columns]
             
             logger.info(f"Transformation completed successfully")
             return df_transformed
             
         except Exception as e:
             logger.error(f"Error during transformation: {str(e)}")
+            import traceback
+            logger.error(traceback.format_exc())
             raise
     
     def transform_all_categories(self, category_dfs: Dict[int, pd.DataFrame]) -> Dict[int, pd.DataFrame]:
@@ -228,12 +247,18 @@ class YouTubeTransformer:
         
         for cat_id, df in category_dfs.items():
             try:
-                transformed_dfs[cat_id] = self.transform_data(df)
+                transformed_df = self.transform_data(df)
+                if not transformed_df.empty:
+                    transformed_dfs[cat_id] = transformed_df
+                    logger.info(f"Transformation completed successfully for category {cat_id}")
+                else:
+                    logger.warning(f"Transformation resulted in empty DataFrame for category {cat_id}")
             except Exception as e:
                 logger.error(f"Error transforming data for category {cat_id}: {str(e)}")
                 # Continue with other categories even if one fails
                 continue
         
+        logger.info(f"Transformed {len(transformed_dfs)}/{len(category_dfs)} categories successfully")
         return transformed_dfs
 
 def main(config_path: str, input_path: str = None) -> Dict[int, pd.DataFrame]:

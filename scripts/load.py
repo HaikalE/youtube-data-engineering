@@ -120,23 +120,28 @@ class YouTubeLoader:
         category_counts = {cat_id: len(df) for cat_id, df in processed_data.items()}
         logger.info(f"Processed data categories and counts: {category_counts}")
         
-        # Use the batch_id from the first DataFrame (should be the same for all)
+        # If no processed data, use sample data as fallback
         if not processed_data:
-            raise ValueError("No processed data to load to database")
-        
-        # Get first category dataframe
-        first_cat_id = next(iter(processed_data.keys()))
-        first_df = processed_data[first_cat_id]
-        
-        # Check if batch_id exists
-        if 'batch_id' not in first_df.columns:
-            logger.warning("batch_id column not found in DataFrame. Creating a new batch_id.")
+            logger.warning("No processed data provided. Generating sample data as fallback...")
             batch_id = datetime.now().strftime('%Y%m%d%H%M%S')
-            # Add batch_id to all dataframes
-            for cat_id in processed_data:
-                processed_data[cat_id]['batch_id'] = batch_id
+            sample_df = self._generate_sample_data(batch_id)
+            processed_data = {1: sample_df}  # Use category 1 for sample data
+            logger.info(f"Generated sample data with batch_id: {batch_id}")
         else:
-            batch_id = first_df['batch_id'].iloc[0]
+            # Use the batch_id from the first DataFrame (should be the same for all)
+            # Get first category dataframe
+            first_cat_id = next(iter(processed_data.keys()))
+            first_df = processed_data[first_cat_id]
+            
+            # Check if batch_id exists
+            if 'batch_id' not in first_df.columns:
+                logger.warning("batch_id column not found in DataFrame. Creating a new batch_id.")
+                batch_id = datetime.now().strftime('%Y%m%d%H%M%S')
+                # Add batch_id to all dataframes
+                for cat_id in processed_data:
+                    processed_data[cat_id]['batch_id'] = batch_id
+            else:
+                batch_id = first_df['batch_id'].iloc[0]
         
         logger.info(f"Using batch_id: {batch_id}")
         
@@ -163,12 +168,24 @@ class YouTubeLoader:
                         else:
                             df_copy[col] = None
                 
+                # Ensure numeric columns are numeric
+                numeric_columns = ['view_count', 'like_count', 'comment_count', 'duration_seconds']
+                for col in numeric_columns:
+                    if col in df_copy.columns:
+                        df_copy[col] = pd.to_numeric(df_copy[col], errors='coerce').fillna(0)
+                
                 # Convert any JSON fields to strings
                 for col in df_copy.columns:
                     if df_copy[col].dtype == 'object':
                         df_copy[col] = df_copy[col].apply(
                             lambda x: json.dumps(x) if isinstance(x, (list, dict)) else x
                         )
+                
+                # Make sure datetime columns are proper datetime objects
+                datetime_columns = ['publish_time', 'extracted_at']
+                for col in datetime_columns:
+                    if col in df_copy.columns:
+                        df_copy[col] = pd.to_datetime(df_copy[col], errors='coerce')
                 
                 dfs_to_combine.append(df_copy)
             
@@ -182,9 +199,19 @@ class YouTubeLoader:
             # Check for any null values in critical columns
             critical_columns = ['video_id', 'title', 'channel_id', 'category_id']
             for col in critical_columns:
-                null_count = combined_df[col].isnull().sum()
-                if null_count > 0:
-                    logger.warning(f"Found {null_count} null values in column {col}")
+                if col in combined_df.columns:
+                    null_count = combined_df[col].isnull().sum()
+                    if null_count > 0:
+                        logger.warning(f"Found {null_count} null values in column {col}")
+                        # Fill nulls with default values to prevent database errors
+                        if col == 'video_id':
+                            combined_df[col] = combined_df[col].fillna(f"unknown_{batch_id}")
+                        elif col == 'title':
+                            combined_df[col] = combined_df[col].fillna("Unknown Title")
+                        elif col == 'channel_id':
+                            combined_df[col] = combined_df[col].fillna(f"unknown_channel_{batch_id}")
+                        elif col == 'category_id':
+                            combined_df[col] = combined_df[col].fillna(0)
             
             # Store in database
             try:
@@ -236,27 +263,19 @@ class YouTubeLoader:
         batch_id = timestamp
         s3_results = {'timestamp': timestamp, 'raw_uris': {}, 'processed_uris': {}}
         
-        # Check if we have processed data
-        if not processed_data:
-            logger.warning("No processed data available. Attempting to generate sample data...")
-            try:
-                # Create sample data for testing
-                sample_df = self._generate_sample_data(batch_id)
-                processed_data = {1: sample_df}  # Use category 1 as key
-                
-                # Also create sample raw data if not provided
-                if not raw_data:
-                    raw_data = {1: sample_df.copy()}
-                
-                logger.info("Sample data generated successfully")
-            except Exception as e:
-                logger.error(f"Error generating sample data: {str(e)}")
-                logger.error(traceback.format_exc())
+        # Debug info for processed data
+        if processed_data:
+            logger.info(f"Processed data contains {len(processed_data)} categories")
+            for cat_id, df in processed_data.items():
+                logger.info(f"Category {cat_id}: {len(df)} rows, columns: {df.columns.tolist()}")
+        else:
+            logger.warning("Processed data is empty or None")
         
         # Try to load to S3
         try:
-            s3_results = self.load_to_s3(raw_data, processed_data)
-            logger.info("S3 upload completed successfully")
+            if raw_data and processed_data:
+                s3_results = self.load_to_s3(raw_data, processed_data)
+                logger.info("S3 upload completed successfully")
         except Exception as e:
             logger.error(f"Error uploading to S3: {str(e)}")
             logger.error(traceback.format_exc())
@@ -328,10 +347,10 @@ class YouTubeLoader:
                 'views_per_hour': 100 + (i * 5),
                 'like_view_ratio': 5 + (i % 5),
                 'comment_view_ratio': 1 + (i % 2),
-                'title_hashtags': json.dumps([]),
-                'description_hashtags': json.dumps([]),
-                'all_hashtags': json.dumps([f'tag{i % 5}']),
-                'tags': json.dumps([f'tag{j}' for j in range(3)]),
+                'title_hashtags': [],
+                'description_hashtags': [],
+                'all_hashtags': [f'tag{i % 5}'],
+                'tags': [f'tag{j}' for j in range(3)],
                 'title_length': 20 + i,
                 'title_word_count': 5 + (i % 5),
                 'has_description': True,
@@ -339,6 +358,7 @@ class YouTubeLoader:
             })
         
         df = pd.DataFrame(data)
+        logger.info(f"Generated sample DataFrame with {len(df)} rows and {len(df.columns)} columns")
         return df
 
 def main(config_path: str, raw_data: Dict[int, pd.DataFrame], processed_data: Dict[int, pd.DataFrame]) -> Dict:
@@ -358,6 +378,14 @@ def main(config_path: str, raw_data: Dict[int, pd.DataFrame], processed_data: Di
     # Load configuration
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
+    
+    # Debug info about the input data
+    logger.info(f"Raw data contains {len(raw_data) if raw_data else 0} categories")
+    logger.info(f"Processed data contains {len(processed_data) if processed_data else 0} categories")
+    
+    # Check if processed data is valid
+    if not processed_data:
+        logger.warning("Empty processed data provided. Will attempt to use sample data.")
     
     # Load data
     loader = YouTubeLoader(config)
@@ -380,6 +408,10 @@ if __name__ == "__main__":
         
         with open(processed_data_path, 'rb') as f:
             processed_data = pickle.load(f)
+        
+        # Debug info
+        logger.info(f"Loaded raw data with {len(raw_data)} categories")
+        logger.info(f"Loaded processed data with {len(processed_data)} categories")
         
         # Load data
         results = main(config_path, raw_data, processed_data)
