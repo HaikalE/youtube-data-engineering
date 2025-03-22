@@ -122,6 +122,9 @@ class YouTubeExtractor:
             if "videoChartNotFound" in str(e):
                 logger.warning(f"Trending chart not available for region: {region}")
                 return pd.DataFrame()  # Return empty DataFrame for this region
+            elif "notFound" in str(e):
+                logger.warning(f"Error fetching trending videos for category {category_id}: {str(e)}")
+                return pd.DataFrame()  # Return empty DataFrame for this category
             raise
         except Exception as e:
             logger.error(f"Error fetching trending videos: {str(e)}")
@@ -166,19 +169,14 @@ class YouTubeExtractor:
         """
         category_dfs = {}
         
-        # First get all trending videos
-        all_trending = self.try_multiple_regions()
-        if not all_trending.empty:
-            category_dfs[0] = all_trending
-            logger.info(f"Successfully retrieved {len(all_trending)} trending videos")
-        else:
-            logger.warning("Could not retrieve trending videos for any region")
-            # Create a sample dataset for testing if no real data is available
-            if os.environ.get("GENERATE_SAMPLE_DATA", "false").lower() == "true":
-                category_dfs[0] = self._generate_sample_data()
+        # Skip trying the "All" category (ID 0) since it appears to be no longer supported
+        # by the YouTube API and directly fetch specific categories
+        valid_categories = [cat_id for cat_id in self.categories.keys() if cat_id != 0]
         
-        # Then get trending videos for each category
-        for cat_id in [cat_id for cat_id in self.categories.keys() if cat_id != 0]:
+        logger.info(f"Fetching trending videos for {len(valid_categories)} categories")
+        
+        # Fetch trending videos for each category
+        for cat_id in valid_categories:
             try:
                 cat_df = self.try_multiple_regions(cat_id)
                 if not cat_df.empty:
@@ -190,33 +188,45 @@ class YouTubeExtractor:
                 # Continue with other categories even if one fails
                 continue
         
+        # If we have at least some data, the pipeline can continue
+        if category_dfs:
+            logger.info(f"Successfully retrieved trending videos for {len(category_dfs)} categories")
+        else:
+            logger.warning("Failed to retrieve trending videos for any category")
+            # Create a sample dataset for testing if no real data is available
+            if os.environ.get("GENERATE_SAMPLE_DATA", "false").lower() == "true":
+                logger.info("Generating sample data for testing")
+                category_dfs[1] = self._generate_sample_data(1)  # Use category 1 for sample data
+        
         return category_dfs
     
-    def _generate_sample_data(self) -> pd.DataFrame:
+    def _generate_sample_data(self, category_id: int = 1) -> pd.DataFrame:
         """
         Generate sample data for testing when API fails.
         
+        Args:
+            category_id (int): Category ID to use for sample data
+            
         Returns:
             pd.DataFrame: Sample trending videos data
         """
-        logger.info("Generating sample data for testing")
+        logger.info(f"Generating sample data for category {category_id}")
         
         # Create sample data with realistic values
         sample_data = []
-        categories = list(self.categories.items())
+        category_name = self.categories.get(category_id, "Unknown")
         
         for i in range(50):  # Generate 50 sample videos
-            cat_id, cat_name = categories[i % len(categories)]
             sample_data.append({
                 "video_id": f"sample_id_{i}",
-                "title": f"Sample Video Title {i}",
+                "title": f"Sample Video Title {i} - {category_name}",
                 "channel_id": f"channel_{i % 10}",
                 "channel_title": f"Sample Channel {i % 10}",
                 "publish_time": (datetime.now().replace(hour=i % 24)).isoformat(),
-                "description": f"This is a sample description for video {i}",
+                "description": f"This is a sample description for video {i} in category {category_name}",
                 "tags": json.dumps([f"tag{j}" for j in range(5)]),
-                "category_id": str(cat_id),
-                "category_name": cat_name,
+                "category_id": str(category_id),
+                "category_name": category_name,
                 "thumbnail_url": f"https://example.com/thumbnail_{i}.jpg",
                 "duration": f"PT{(i % 30) + 1}M",
                 "view_count": 10000 + (i * 1000),
@@ -248,7 +258,7 @@ def main(config_path: str):
     category_dfs = extractor.get_videos_by_category()
     
     # Check if data was retrieved
-    if all(df.empty for df in category_dfs.values()):
+    if not category_dfs:
         logger.error("Failed to retrieve any data from YouTube API")
         if "GENERATE_SAMPLE_DATA" not in os.environ:
             logger.info("You can set GENERATE_SAMPLE_DATA=true to use sample data for testing")

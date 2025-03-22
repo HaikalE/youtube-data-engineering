@@ -87,6 +87,15 @@ class YouTubeTransformer:
         df_transformed['publish_time'] = pd.to_datetime(df_transformed['publish_time'])
         df_transformed['extracted_at'] = pd.to_datetime(df_transformed['extracted_at'])
         
+        # Fix timezone issue - ensure both datetimes are timezone-aware or timezone-naive
+        if df_transformed['publish_time'].dt.tz is not None:
+            # Make extracted_at timezone-aware (UTC) to match publish_time
+            df_transformed['extracted_at'] = df_transformed['extracted_at'].dt.tz_localize('UTC')
+        else:
+            # If publish_time is somehow tz-naive, make sure both are consistent
+            df_transformed['publish_time'] = df_transformed['publish_time'].dt.tz_localize(None)
+            df_transformed['extracted_at'] = df_transformed['extracted_at'].dt.tz_localize(None)
+        
         # Calculate how long the video has been published before extraction
         df_transformed['hours_since_published'] = (
             df_transformed['extracted_at'] - df_transformed['publish_time']
