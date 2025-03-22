@@ -1,0 +1,375 @@
+(aws-env) haikal@LAPTOP-8Q0JOEP6:~/youtube_trending_analysis$ ./start.sh pipeline
+==================================================================
+             YouTube Trending Analysis Startup Script
+==================================================================
+
+Checking environment variables...
+✓ YOUTUBE_API_KEY is set
+✓ AWS_ACCESS_KEY_ID is set
+✓ AWS_SECRET_ACCESS_KEY is set
+✓ DB_PASSWORD is set
+
+Checking Python installation...
+✓ Python 3 is installed
+  Python 3.10.12
+
+Checking for dependencies...
+Installing dependencies if needed...
+Requirement already satisfied: apache-airflow==2.7.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 2)) (2.7.1)
+Requirement already satisfied: sqlalchemy<2.0,>=1.4.24 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 3)) (1.4.54)
+Requirement already satisfied: flask<2.3,>=2.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 4)) (2.2.5)
+Requirement already satisfied: boto3==1.28.35 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 5)) (1.28.35)
+Requirement already satisfied: google-api-python-client==2.97.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 6)) (2.97.0)
+Requirement already satisfied: google-auth==2.22.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 7)) (2.22.0)
+Requirement already satisfied: pandas==2.1.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 10)) (2.1.0)
+Requirement already satisfied: numpy==1.25.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 11)) (1.25.2)
+Requirement already satisfied: matplotlib==3.7.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 14)) (3.7.2)
+Requirement already satisfied: seaborn==0.12.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 15)) (0.12.2)
+Requirement already satisfied: dash==2.13.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 16)) (2.13.0)
+Requirement already satisfied: plotly==5.16.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 17)) (5.16.1)
+Requirement already satisfied: psycopg2-binary==2.9.7 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 20)) (2.9.7)
+Requirement already satisfied: pytest==7.4.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 23)) (7.4.0)
+Requirement already satisfied: pyyaml==6.0.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 24)) (6.0.1)
+Requirement already satisfied: python-dotenv==1.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from -r requirements.txt (line 25)) (1.0.0)
+Requirement already satisfied: sqlalchemy-jsonfield>=1.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.0.2)
+Requirement already satisfied: jinja2>=3.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.1.6)
+Requirement already satisfied: cron-descriptor>=1.2.24 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.4.5)
+Requirement already satisfied: cryptography>=0.9.3 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (44.0.2)
+Requirement already satisfied: deprecated>=1.2.13 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.2.18)
+Requirement already satisfied: pluggy>=1.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.5.0)
+Requirement already satisfied: graphviz>=0.12 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.20.3)
+Requirement already satisfied: alembic<2.0,>=1.6.3 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.15.1)
+Requirement already satisfied: python-daemon>=3.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.1.2)
+Requirement already satisfied: apache-airflow-providers-ftp in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.10.1)
+Requirement already satisfied: flask-login>=0.6.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.6.3)
+Requirement already satisfied: tenacity!=8.2.0,>=6.2.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (9.0.0)
+Requirement already satisfied: python-dateutil>=2.3 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.9.0.post0)
+Requirement already satisfied: werkzeug>=2.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.2.3)
+Requirement already satisfied: pydantic>=1.10.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.10.6)
+Requirement already satisfied: flask-appbuilder==4.3.6 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (4.3.6)
+Requirement already satisfied: opentelemetry-exporter-otlp in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.31.1)
+Requirement already satisfied: configupdater>=3.1.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.2)
+Requirement already satisfied: rfc3339-validator>=0.1.4 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.1.4)
+Requirement already satisfied: colorlog<5.0,>=4.0.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (4.8.0)
+Requirement already satisfied: lazy-object-proxy in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.10.0)
+Requirement already satisfied: blinker in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.9.0)
+Requirement already satisfied: flask-wtf>=0.15 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.2.2)
+Requirement already satisfied: markdown-it-py>=2.1.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.0.0)
+Requirement already satisfied: httpx in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.28.1)
+Requirement already satisfied: pendulum>=2.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.0.0)
+Requirement already satisfied: attrs>=22.1.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (25.3.0)
+Requirement already satisfied: linkify-it-py>=2.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.0.3)
+Requirement already satisfied: mdit-py-plugins>=0.3.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.4.2)
+Requirement already satisfied: packaging>=14.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (24.2)
+Requirement already satisfied: gunicorn>=20.1.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (23.0.0)
+Requirement already satisfied: rich>=12.4.4 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (13.9.4)
+Requirement already satisfied: pygments>=2.0.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.19.1)
+Requirement already satisfied: google-re2>=1.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.1.20240702)
+Requirement already satisfied: markupsafe>=1.1.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.0.2)
+Requirement already satisfied: croniter>=0.3.17 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (6.0.0)
+Requirement already satisfied: tabulate>=0.7.5 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.9.0)
+Requirement already satisfied: typing-extensions>=4.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (4.12.2)
+Requirement already satisfied: unicodecsv>=0.14.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.14.1)
+Requirement already satisfied: jsonschema>=4.18.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (4.23.0)
+Requirement already satisfied: pathspec>=0.9.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.12.1)
+Requirement already satisfied: apache-airflow-providers-sqlite in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.8.2)
+Requirement already satisfied: flask-caching>=1.5.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.3.1)
+Requirement already satisfied: lockfile>=0.12.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.12.2)
+Requirement already satisfied: asgiref in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.8.1)
+Requirement already satisfied: markdown>=3.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.7)
+Requirement already satisfied: connexion[flask]>=2.10.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.14.2)
+Requirement already satisfied: opentelemetry-api>=1.15.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.31.1)
+Requirement already satisfied: python-slugify>=5.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (8.0.4)
+Requirement already satisfied: setproctitle>=1.1.8 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.3.5)
+Requirement already satisfied: python-nvd3>=0.15.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.16.0)
+Requirement already satisfied: termcolor>=1.1.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.5.0)
+Requirement already satisfied: pyjwt>=2.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.10.1)
+Requirement already satisfied: apache-airflow-providers-common-sql in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.15.0)
+Requirement already satisfied: psutil>=4.2.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (7.0.0)
+Requirement already satisfied: apache-airflow-providers-imap in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.6.1)
+Requirement already satisfied: itsdangerous>=2.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.2.0)
+Requirement already satisfied: argcomplete>=1.10 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.6.0)
+Requirement already satisfied: flask-session>=0.4.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.5.0)
+Requirement already satisfied: dill>=0.2.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.3.9)
+Requirement already satisfied: apache-airflow-providers-http in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (4.12.0)
+Requirement already satisfied: rich-argparse>=1.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.7.0)
+Requirement already satisfied: cattrs>=22.1.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (24.1.2)
+Requirement already satisfied: marshmallow-oneofschema>=2.0.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.1.1)
+Requirement already satisfied: jmespath<2.0.0,>=0.7.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from boto3==1.28.35->-r requirements.txt (line 5)) (1.0.1)
+Requirement already satisfied: botocore<1.32.0,>=1.31.35 in /home/haikal/aws-env/lib/python3.10/site-packages (from boto3==1.28.35->-r requirements.txt (line 5)) (1.31.85)
+Requirement already satisfied: s3transfer<0.7.0,>=0.6.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from boto3==1.28.35->-r requirements.txt (line 5)) (0.6.2)
+Requirement already satisfied: uritemplate<5,>=3.0.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-api-python-client==2.97.0->-r requirements.txt (line 6)) (4.1.1)
+Requirement already satisfied: google-auth-httplib2>=0.1.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-api-python-client==2.97.0->-r requirements.txt (line 6)) (0.2.0)
+Requirement already satisfied: httplib2<1.dev0,>=0.15.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-api-python-client==2.97.0->-r requirements.txt (line 6)) (0.22.0)
+Requirement already satisfied: google-api-core!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0.dev0,>=1.31.5 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-api-python-client==2.97.0->-r requirements.txt (line 6)) (2.24.2)
+Requirement already satisfied: six>=1.9.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-auth==2.22.0->-r requirements.txt (line 7)) (1.17.0)
+Requirement already satisfied: cachetools<6.0,>=2.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-auth==2.22.0->-r requirements.txt (line 7)) (5.5.2)
+Requirement already satisfied: rsa<5,>=3.1.4 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-auth==2.22.0->-r requirements.txt (line 7)) (4.7.2)
+Requirement already satisfied: urllib3<2.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-auth==2.22.0->-r requirements.txt (line 7)) (1.26.20)
+Requirement already satisfied: pyasn1-modules>=0.2.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-auth==2.22.0->-r requirements.txt (line 7)) (0.4.1)
+Requirement already satisfied: pytz>=2020.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from pandas==2.1.0->-r requirements.txt (line 10)) (2025.1)
+Requirement already satisfied: tzdata>=2022.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from pandas==2.1.0->-r requirements.txt (line 10)) (2025.1)
+Requirement already satisfied: pillow>=6.2.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from matplotlib==3.7.2->-r requirements.txt (line 14)) (11.1.0)
+Requirement already satisfied: contourpy>=1.0.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from matplotlib==3.7.2->-r requirements.txt (line 14)) (1.3.1)
+Requirement already satisfied: pyparsing<3.1,>=2.3.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from matplotlib==3.7.2->-r requirements.txt (line 14)) (3.0.9)
+Requirement already satisfied: kiwisolver>=1.0.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from matplotlib==3.7.2->-r requirements.txt (line 14)) (1.4.8)
+Requirement already satisfied: cycler>=0.10 in /home/haikal/aws-env/lib/python3.10/site-packages (from matplotlib==3.7.2->-r requirements.txt (line 14)) (0.12.1)
+Requirement already satisfied: fonttools>=4.22.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from matplotlib==3.7.2->-r requirements.txt (line 14)) (4.56.0)
+Requirement already satisfied: dash-table==5.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from dash==2.13.0->-r requirements.txt (line 16)) (5.0.0)
+Requirement already satisfied: ansi2html in /home/haikal/aws-env/lib/python3.10/site-packages (from dash==2.13.0->-r requirements.txt (line 16)) (1.9.2)
+Requirement already satisfied: setuptools in /home/haikal/aws-env/lib/python3.10/site-packages (from dash==2.13.0->-r requirements.txt (line 16)) (59.6.0)
+Requirement already satisfied: requests in /home/haikal/aws-env/lib/python3.10/site-packages (from dash==2.13.0->-r requirements.txt (line 16)) (2.32.3)
+Requirement already satisfied: dash-core-components==2.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from dash==2.13.0->-r requirements.txt (line 16)) (2.0.0)
+Requirement already satisfied: retrying in /home/haikal/aws-env/lib/python3.10/site-packages (from dash==2.13.0->-r requirements.txt (line 16)) (1.3.4)
+Requirement already satisfied: nest-asyncio in /home/haikal/aws-env/lib/python3.10/site-packages (from dash==2.13.0->-r requirements.txt (line 16)) (1.6.0)
+Requirement already satisfied: dash-html-components==2.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from dash==2.13.0->-r requirements.txt (line 16)) (2.0.0)
+Requirement already satisfied: iniconfig in /home/haikal/aws-env/lib/python3.10/site-packages (from pytest==7.4.0->-r requirements.txt (line 23)) (2.1.0)
+Requirement already satisfied: exceptiongroup>=1.0.0rc8 in /home/haikal/aws-env/lib/python3.10/site-packages (from pytest==7.4.0->-r requirements.txt (line 23)) (1.2.2)
+Requirement already satisfied: tomli>=1.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from pytest==7.4.0->-r requirements.txt (line 23)) (2.2.1)
+Requirement already satisfied: Flask-Limiter<4,>3 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.12)
+Requirement already satisfied: Flask-Babel<3,>=1 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.0.0)
+Requirement already satisfied: Flask-SQLAlchemy<3,>=2.4 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.5.1)
+Requirement already satisfied: prison<1.0.0,>=0.2.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.2.1)
+Requirement already satisfied: marshmallow-sqlalchemy<0.27.0,>=0.22.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.26.1)
+Requirement already satisfied: sqlalchemy-utils<1,>=0.32.21 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.41.2)
+Requirement already satisfied: marshmallow<4,>=3.18.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.26.1)
+Requirement already satisfied: apispec[yaml]<7,>=6.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (6.8.1)
+Requirement already satisfied: click<9,>=8 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (8.1.8)
+Requirement already satisfied: email-validator<2,>=1.0.5 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.3.1)
+Requirement already satisfied: WTForms<4 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.2.1)
+Requirement already satisfied: Flask-JWT-Extended<5.0.0,>=4.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (4.7.1)
+Requirement already satisfied: colorama<1,>=0.3.9 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.4.6)
+Requirement already satisfied: greenlet!=0.4.17 in /home/haikal/aws-env/lib/python3.10/site-packages (from sqlalchemy<2.0,>=1.4.24->-r requirements.txt (line 3)) (3.1.1)
+Requirement already satisfied: Mako in /home/haikal/aws-env/lib/python3.10/site-packages (from alembic<2.0,>=1.6.3->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.3.9)
+Requirement already satisfied: clickclick<21,>=1.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from connexion[flask]>=2.10.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (20.10.2)
+Requirement already satisfied: inflection<0.6,>=0.3.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from connexion[flask]>=2.10.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.5.1)
+Requirement already satisfied: cffi>=1.12 in /home/haikal/aws-env/lib/python3.10/site-packages (from cryptography>=0.9.3->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.17.1)
+Requirement already satisfied: wrapt<2,>=1.10 in /home/haikal/aws-env/lib/python3.10/site-packages (from deprecated>=1.2.13->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.17.2)
+Requirement already satisfied: cachelib>=0.9.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from flask-caching>=1.5.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.13.0)
+Requirement already satisfied: proto-plus<2.0.0,>=1.22.3 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-api-core!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0.dev0,>=1.31.5->google-api-python-client==2.97.0->-r requirements.txt (line 6)) (1.26.1)
+Requirement already satisfied: googleapis-common-protos<2.0.0,>=1.56.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-api-core!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0.dev0,>=1.31.5->google-api-python-client==2.97.0->-r requirements.txt (line 6)) (1.69.2)
+Requirement already satisfied: protobuf!=3.20.0,!=3.20.1,!=4.21.0,!=4.21.1,!=4.21.2,!=4.21.3,!=4.21.4,!=4.21.5,<7.0.0,>=3.19.5 in /home/haikal/aws-env/lib/python3.10/site-packages (from google-api-core!=2.0.*,!=2.1.*,!=2.2.*,!=2.3.0,<3.0.0.dev0,>=1.31.5->google-api-python-client==2.97.0->-r requirements.txt (line 6)) (5.29.4)
+Requirement already satisfied: rpds-py>=0.7.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from jsonschema>=4.18.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.23.1)
+Requirement already satisfied: jsonschema-specifications>=2023.03.6 in /home/haikal/aws-env/lib/python3.10/site-packages (from jsonschema>=4.18.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (2024.10.1)
+Requirement already satisfied: referencing>=0.28.4 in /home/haikal/aws-env/lib/python3.10/site-packages (from jsonschema>=4.18.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.36.2)
+Requirement already satisfied: uc-micro-py in /home/haikal/aws-env/lib/python3.10/site-packages (from linkify-it-py>=2.0.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.0.3)
+Requirement already satisfied: mdurl~=0.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from markdown-it-py>=2.1.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.1.2)
+Requirement already satisfied: importlib-metadata<8.7.0,>=6.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from opentelemetry-api>=1.15.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (8.6.1)
+Requirement already satisfied: time-machine>=2.6.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from pendulum>=2.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.16.0)
+Requirement already satisfied: pyasn1<0.7.0,>=0.4.6 in /home/haikal/aws-env/lib/python3.10/site-packages (from pyasn1-modules>=0.2.1->google-auth==2.22.0->-r requirements.txt (line 7)) (0.6.1)
+Requirement already satisfied: annotated-types>=0.6.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from pydantic>=1.10.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.7.0)
+Requirement already satisfied: pydantic-core==2.27.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from pydantic>=1.10.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.27.2)
+Requirement already satisfied: text-unidecode>=1.3 in /home/haikal/aws-env/lib/python3.10/site-packages (from python-slugify>=5.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.3)
+Requirement already satisfied: idna<4,>=2.5 in /home/haikal/aws-env/lib/python3.10/site-packages (from requests->dash==2.13.0->-r requirements.txt (line 16)) (3.10)
+Requirement already satisfied: certifi>=2017.4.17 in /home/haikal/aws-env/lib/python3.10/site-packages (from requests->dash==2.13.0->-r requirements.txt (line 16)) (2025.1.31)
+Requirement already satisfied: charset-normalizer<4,>=2 in /home/haikal/aws-env/lib/python3.10/site-packages (from requests->dash==2.13.0->-r requirements.txt (line 16)) (3.4.1)
+Requirement already satisfied: sqlparse>=0.4.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow-providers-common-sql->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.5.3)
+Requirement already satisfied: more-itertools>=9.0.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow-providers-common-sql->apache-airflow==2.7.1->-r requirements.txt (line 2)) (10.6.0)
+Requirement already satisfied: requests_toolbelt in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow-providers-http->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.0.0)
+Requirement already satisfied: aiohttp>=3.9.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from apache-airflow-providers-http->apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.11.14)
+Requirement already satisfied: anyio in /home/haikal/aws-env/lib/python3.10/site-packages (from httpx->apache-airflow==2.7.1->-r requirements.txt (line 2)) (4.9.0)
+Requirement already satisfied: httpcore==1.* in /home/haikal/aws-env/lib/python3.10/site-packages (from httpx->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.0.7)
+Requirement already satisfied: h11<0.15,>=0.13 in /home/haikal/aws-env/lib/python3.10/site-packages (from httpcore==1.*->httpx->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.14.0)
+Requirement already satisfied: opentelemetry-exporter-otlp-proto-grpc==1.31.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from opentelemetry-exporter-otlp->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.31.1)
+Requirement already satisfied: opentelemetry-exporter-otlp-proto-http==1.31.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from opentelemetry-exporter-otlp->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.31.1)
+Requirement already satisfied: opentelemetry-sdk~=1.31.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from opentelemetry-exporter-otlp-proto-grpc==1.31.1->opentelemetry-exporter-otlp->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.31.1)
+Requirement already satisfied: opentelemetry-exporter-otlp-proto-common==1.31.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from opentelemetry-exporter-otlp-proto-grpc==1.31.1->opentelemetry-exporter-otlp->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.31.1)
+Requirement already satisfied: opentelemetry-proto==1.31.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from opentelemetry-exporter-otlp-proto-grpc==1.31.1->opentelemetry-exporter-otlp->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.31.1)
+Requirement already satisfied: grpcio<2.0.0,>=1.63.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from opentelemetry-exporter-otlp-proto-grpc==1.31.1->opentelemetry-exporter-otlp->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.71.0)
+Requirement already satisfied: frozenlist>=1.1.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from aiohttp>=3.9.2->apache-airflow-providers-http->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.5.0)
+Requirement already satisfied: yarl<2.0,>=1.17.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from aiohttp>=3.9.2->apache-airflow-providers-http->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.18.3)
+Requirement already satisfied: aiohappyeyeballs>=2.3.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from aiohttp>=3.9.2->apache-airflow-providers-http->apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.6.1)
+Requirement already satisfied: aiosignal>=1.1.2 in /home/haikal/aws-env/lib/python3.10/site-packages (from aiohttp>=3.9.2->apache-airflow-providers-http->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.3.2)
+Requirement already satisfied: multidict<7.0,>=4.5 in /home/haikal/aws-env/lib/python3.10/site-packages (from aiohttp>=3.9.2->apache-airflow-providers-http->apache-airflow==2.7.1->-r requirements.txt (line 2)) (6.2.0)
+Requirement already satisfied: propcache>=0.2.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from aiohttp>=3.9.2->apache-airflow-providers-http->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.3.0)
+Requirement already satisfied: async-timeout<6.0,>=4.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from aiohttp>=3.9.2->apache-airflow-providers-http->apache-airflow==2.7.1->-r requirements.txt (line 2)) (5.0.1)
+Requirement already satisfied: pycparser in /home/haikal/aws-env/lib/python3.10/site-packages (from cffi>=1.12->cryptography>=0.9.3->apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.22)
+Requirement already satisfied: dnspython>=1.15.0 in /home/haikal/aws-env/lib/python3.10/site-packages (from email-validator<2,>=1.0.5->flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.7.0)
+Requirement already satisfied: Babel>=2.3 in /home/haikal/aws-env/lib/python3.10/site-packages (from Flask-Babel<3,>=1->flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (2.17.0)
+Requirement already satisfied: ordered-set<5,>4 in /home/haikal/aws-env/lib/python3.10/site-packages (from Flask-Limiter<4,>3->flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (4.1.0)
+Requirement already satisfied: limits>=3.13 in /home/haikal/aws-env/lib/python3.10/site-packages (from Flask-Limiter<4,>3->flask-appbuilder==4.3.6->apache-airflow==2.7.1->-r requirements.txt (line 2)) (4.4.1)
+Requirement already satisfied: zipp>=3.20 in /home/haikal/aws-env/lib/python3.10/site-packages (from importlib-metadata<8.7.0,>=6.0->opentelemetry-api>=1.15.0->apache-airflow==2.7.1->-r requirements.txt (line 2)) (3.21.0)
+Requirement already satisfied: sniffio>=1.1 in /home/haikal/aws-env/lib/python3.10/site-packages (from anyio->httpx->apache-airflow==2.7.1->-r requirements.txt (line 2)) (1.3.1)
+Requirement already satisfied: opentelemetry-semantic-conventions==0.52b1 in /home/haikal/aws-env/lib/python3.10/site-packages (from opentelemetry-sdk~=1.31.1->opentelemetry-exporter-otlp-proto-grpc==1.31.1->opentelemetry-exporter-otlp->apache-airflow==2.7.1->-r requirements.txt (line 2)) (0.52b1)
+✓ Dependencies are installed
+
+Setting up project directories...
+
+Initializing database...
+2025-03-22 22:15:34,516 - utils.db_utils - INFO - Database tables created successfully.
+✓ Database initialized successfully
+
+Running the pipeline manually...
+1. Extracting data...
+2025-03-22 22:15:34,937 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-03-22 22:15:34,940 - __main__ - INFO - Fetching trending videos for region: US, category: All
+2025-03-22 22:15:35,498 - __main__ - ERROR - HTTP error occurred for region US: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=US&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:35,498 - __main__ - WARNING - Trending chart not available for region: US
+2025-03-22 22:15:35,499 - __main__ - INFO - No results for primary region US, trying alternatives...
+2025-03-22 22:15:35,499 - __main__ - INFO - Fetching trending videos for region: GB, category: All
+2025-03-22 22:15:35,590 - __main__ - ERROR - HTTP error occurred for region GB: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=GB&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:35,590 - __main__ - WARNING - Trending chart not available for region: GB
+2025-03-22 22:15:36,591 - __main__ - INFO - Fetching trending videos for region: CA, category: All
+2025-03-22 22:15:36,636 - __main__ - ERROR - HTTP error occurred for region CA: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=CA&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:36,636 - __main__ - WARNING - Trending chart not available for region: CA
+2025-03-22 22:15:37,638 - __main__ - INFO - Fetching trending videos for region: AU, category: All
+2025-03-22 22:15:37,668 - __main__ - ERROR - HTTP error occurred for region AU: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=AU&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:37,669 - __main__ - WARNING - Trending chart not available for region: AU
+2025-03-22 22:15:38,670 - __main__ - INFO - Fetching trending videos for region: IN, category: All
+2025-03-22 22:15:38,706 - __main__ - ERROR - HTTP error occurred for region IN: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=IN&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:38,707 - __main__ - WARNING - Trending chart not available for region: IN
+2025-03-22 22:15:40,574 - __main__ - INFO - Fetching trending videos for region: FR, category: All
+2025-03-22 22:15:40,716 - __main__ - ERROR - HTTP error occurred for region FR: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=FR&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:40,716 - __main__ - WARNING - Trending chart not available for region: FR
+2025-03-22 22:15:41,718 - __main__ - INFO - Fetching trending videos for region: DE, category: All
+2025-03-22 22:15:41,772 - __main__ - ERROR - HTTP error occurred for region DE: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=DE&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:41,772 - __main__ - WARNING - Trending chart not available for region: DE
+2025-03-22 22:15:42,774 - __main__ - INFO - Fetching trending videos for region: JP, category: All
+2025-03-22 22:15:42,830 - __main__ - ERROR - HTTP error occurred for region JP: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=JP&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:42,831 - __main__ - WARNING - Trending chart not available for region: JP
+2025-03-22 22:15:43,833 - __main__ - INFO - Fetching trending videos for region: KR, category: All
+2025-03-22 22:15:43,921 - __main__ - ERROR - HTTP error occurred for region KR: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=KR&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:43,921 - __main__ - WARNING - Trending chart not available for region: KR
+2025-03-22 22:15:44,924 - __main__ - INFO - Fetching trending videos for region: BR, category: All
+2025-03-22 22:15:44,959 - __main__ - ERROR - HTTP error occurred for region BR: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=BR&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:44,959 - __main__ - WARNING - Trending chart not available for region: BR
+2025-03-22 22:15:45,960 - __main__ - INFO - Fetching trending videos for region: RU, category: All
+2025-03-22 22:15:46,013 - __main__ - ERROR - HTTP error occurred for region RU: <HttpError 400 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=RU&maxResults=50&videoCategoryId=&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "The requested video chart is not supported or is not available.". Details: "[{'message': 'The requested video chart is not supported or is not available.', 'domain': 'youtube.video', 'reason': 'videoChartNotFound'}]">
+2025-03-22 22:15:46,013 - __main__ - WARNING - Trending chart not available for region: RU
+2025-03-22 22:15:47,015 - __main__ - WARNING - Could not retrieve trending videos for any region
+2025-03-22 22:15:47,016 - __main__ - INFO - Fetching trending videos for region: US, category: Film & Animation
+2025-03-22 22:15:47,335 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:47,335 - __main__ - INFO - Fetching trending videos for region: US, category: Autos & Vehicles
+2025-03-22 22:15:47,573 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:47,574 - __main__ - INFO - Fetching trending videos for region: US, category: Music
+2025-03-22 22:15:47,853 - __main__ - INFO - Successfully extracted 30 trending videos
+2025-03-22 22:15:47,853 - __main__ - INFO - Fetching trending videos for region: US, category: Pets & Animals
+2025-03-22 22:15:48,166 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:48,166 - __main__ - INFO - Fetching trending videos for region: US, category: Sports
+2025-03-22 22:15:48,705 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:48,705 - __main__ - INFO - Fetching trending videos for region: US, category: Gaming
+2025-03-22 22:15:49,086 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:49,086 - __main__ - INFO - Fetching trending videos for region: US, category: People & Blogs
+2025-03-22 22:15:49,284 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:49,284 - __main__ - INFO - Fetching trending videos for region: US, category: Comedy
+2025-03-22 22:15:49,619 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:49,619 - __main__ - INFO - Fetching trending videos for region: US, category: Entertainment
+2025-03-22 22:15:49,885 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:49,885 - __main__ - INFO - Fetching trending videos for region: US, category: News & Politics
+2025-03-22 22:15:50,313 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:50,313 - __main__ - INFO - Fetching trending videos for region: US, category: Howto & Style
+2025-03-22 22:15:50,643 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:50,643 - __main__ - INFO - Fetching trending videos for region: US, category: Education
+2025-03-22 22:15:50,696 - __main__ - ERROR - HTTP error occurred for region US: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=US&maxResults=50&videoCategoryId=27&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "Requested entity was not found.". Details: "[{'message': 'Requested entity was not found.', 'domain': 'global', 'reason': 'notFound'}]">
+2025-03-22 22:15:50,696 - __main__ - WARNING - Error fetching trending videos for category 27: <HttpError 404 when requesting https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&chart=mostPopular&regionCode=US&maxResults=50&videoCategoryId=27&key=AIzaSyCwtFd2wf8UVCNkm_6AvSfx2d_o8yLbdTo&alt=json returned "Requested entity was not found.". Details: "[{'message': 'Requested entity was not found.', 'domain': 'global', 'reason': 'notFound'}]">
+2025-03-22 22:15:50,696 - __main__ - INFO - Fetching trending videos for region: US, category: Science & Technology
+2025-03-22 22:15:50,966 - __main__ - INFO - Successfully extracted 50 trending videos
+2025-03-22 22:15:50,968 - __main__ - INFO - Saved raw data to data/raw_data.pkl
+2. Transforming data...
+2025-03-22 22:15:51,337 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,342 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,342 - __main__ - ERROR - Error transforming data for category 1: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,343 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,345 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,345 - __main__ - ERROR - Error transforming data for category 2: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,345 - __main__ - INFO - Transforming data with 30 records
+2025-03-22 22:15:51,348 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,348 - __main__ - ERROR - Error transforming data for category 10: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,348 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,350 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,350 - __main__ - ERROR - Error transforming data for category 15: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,350 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,352 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,352 - __main__ - ERROR - Error transforming data for category 17: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,352 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,354 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,354 - __main__ - ERROR - Error transforming data for category 20: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,354 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,356 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,356 - __main__ - ERROR - Error transforming data for category 22: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,356 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,358 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,358 - __main__ - ERROR - Error transforming data for category 23: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,358 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,367 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,367 - __main__ - ERROR - Error transforming data for category 24: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,367 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,370 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,370 - __main__ - ERROR - Error transforming data for category 25: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,370 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,372 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,372 - __main__ - ERROR - Error transforming data for category 26: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,372 - __main__ - INFO - Transforming data with 50 records
+2025-03-22 22:15:51,374 - __main__ - ERROR - Error during transformation: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,374 - __main__ - ERROR - Error transforming data for category 28: Cannot subtract tz-naive and tz-aware datetime-like objects.
+2025-03-22 22:15:51,374 - __main__ - INFO - Saved processed data to data/processed_data.pkl
+3. Loading data...
+2025-03-22 22:15:52,909 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
+2025-03-22 22:15:52,921 - utils.db_utils - INFO - Database tables created successfully.
+2025-03-22 22:15:52,921 - __main__ - INFO - Uploading data to S3...
+2025-03-22 22:15:52,921 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,922 - utils.s3_utils - ERROR - Error uploading raw data for category 1: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,923 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,923 - utils.s3_utils - ERROR - Error uploading raw data for category 2: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,923 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,923 - utils.s3_utils - ERROR - Error uploading raw data for category 10: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,923 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,923 - utils.s3_utils - ERROR - Error uploading raw data for category 15: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,923 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,923 - utils.s3_utils - ERROR - Error uploading raw data for category 17: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,923 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,923 - utils.s3_utils - ERROR - Error uploading raw data for category 20: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,924 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,924 - utils.s3_utils - ERROR - Error uploading raw data for category 22: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,924 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,924 - utils.s3_utils - ERROR - Error uploading raw data for category 23: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,924 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,924 - utils.s3_utils - ERROR - Error uploading raw data for category 24: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,925 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,925 - utils.s3_utils - ERROR - Error uploading raw data for category 25: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,925 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,925 - utils.s3_utils - ERROR - Error uploading raw data for category 26: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,925 - utils.s3_utils - ERROR - Error uploading DataFrame to S3: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,926 - utils.s3_utils - ERROR - Error uploading raw data for category 28: Missing optional dependency 'pyarrow'. pyarrow is required for parquet support. Use pip or conda to install pyarrow.
+2025-03-22 22:15:52,926 - __main__ - INFO - Uploaded 0 raw data files to S3
+2025-03-22 22:15:52,926 - __main__ - INFO - Uploaded 0 processed data files to S3
+2025-03-22 22:15:52,926 - __main__ - INFO - Loading data to database...
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/haikal/youtube_trending_analysis/scripts/load.py", line 174, in <module>
+    results = main(config_path, raw_data, processed_data)
+  File "/home/haikal/youtube_trending_analysis/scripts/load.py", line 153, in main
+    results = loader.load_data(raw_data, processed_data)
+  File "/home/haikal/youtube_trending_analysis/scripts/load.py", line 122, in load_data
+    batch_id = self.load_to_database(processed_data)
+  File "/home/haikal/youtube_trending_analysis/scripts/load.py", line 87, in load_to_database
+    raise ValueError("No processed data to load to database")
+ValueError: No processed data to load to database
+4. Analyzing data...
+2025-03-22 22:15:54,813 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
+2025-03-22 22:15:54,823 - __main__ - INFO - Running complete analysis...
+2025-03-22 22:15:54,823 - __main__ - INFO - Analyzing category trends...
+Traceback (most recent call last):
+  File "/usr/lib/python3.10/runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.10/runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "/home/haikal/youtube_trending_analysis/scripts/analyze.py", line 542, in <module>
+    results = main(config_path, data)
+  File "/home/haikal/youtube_trending_analysis/scripts/analyze.py", line 523, in main
+    results = analyzer.run_analysis(data)
+  File "/home/haikal/youtube_trending_analysis/scripts/analyze.py", line 447, in run_analysis
+    category_trends = self.analyze_category_trends(data)
+  File "/home/haikal/youtube_trending_analysis/scripts/analyze.py", line 59, in analyze_category_trends
+    combined_df = pd.concat(data.values(), ignore_index=True)
+  File "/home/haikal/aws-env/lib/python3.10/site-packages/pandas/core/reshape/concat.py", line 380, in concat
+    op = _Concatenator(
+  File "/home/haikal/aws-env/lib/python3.10/site-packages/pandas/core/reshape/concat.py", line 443, in __init__
+    objs, keys = self._clean_keys_and_objs(objs, keys)
+  File "/home/haikal/aws-env/lib/python3.10/site-packages/pandas/core/reshape/concat.py", line 505, in _clean_keys_and_objs
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+✓ Pipeline execution completed successfully

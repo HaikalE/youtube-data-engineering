@@ -14,6 +14,8 @@ from typing import Dict, List, Optional, Union, Any
 import matplotlib.pyplot as plt
 import seaborn as sns
 from collections import Counter
+import os
+from sqlalchemy import text
 
 from utils.s3_utils import S3Handler
 from utils.db_utils import DatabaseHandler

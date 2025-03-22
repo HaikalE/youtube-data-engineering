@@ -10,6 +10,8 @@ import numpy as np
 import re
 import json
 import logging
+import os
+import pickle
 from typing import Dict, List, Union
 from datetime import datetime
 import isodate
@@ -225,13 +227,13 @@ class YouTubeTransformer:
         
         return transformed_dfs
 
-def main(config_path: str, input_data: Dict[int, pd.DataFrame]) -> Dict[int, pd.DataFrame]:
+def main(config_path: str, input_path: str = None) -> Dict[int, pd.DataFrame]:
     """
     Main function to transform YouTube trending data.
     
     Args:
         config_path (str): Path to the configuration file
-        input_data (Dict[int, pd.DataFrame]): Dictionary of raw DataFrames by category
+        input_path (str): Path to the input data file
     
     Returns:
         Dict[int, pd.DataFrame]: Dictionary of transformed DataFrames by category
@@ -242,27 +244,44 @@ def main(config_path: str, input_data: Dict[int, pd.DataFrame]) -> Dict[int, pd.
     with open(config_path, 'r') as file:
         config = yaml.safe_load(file)
     
+    # If input path is not provided, use default
+    if input_path is None:
+        input_path = 'data/raw_data.pkl'
+    
+    # Load input data
+    try:
+        with open(input_path, 'rb') as f:
+            input_data = pickle.load(f)
+    except FileNotFoundError:
+        logger.error(f"Input file not found: {input_path}")
+        raise
+    
     # Transform data
     transformer = YouTubeTransformer(config)
-    transformed_dfs = transformer.transform_all_categories(input_data)
+    transformed_data = transformer.transform_all_categories(input_data)
     
-    return transformed_dfs
+    # Save transformed data
+    os.makedirs('data', exist_ok=True)
+    output_path = 'data/processed_data.pkl'
+    with open(output_path, 'wb') as f:
+        pickle.dump(transformed_data, f)
+    
+    logger.info(f"Saved processed data to {output_path}")
+    return transformed_data
 
 if __name__ == "__main__":
     import sys
-    import pickle
     
-    if len(sys.argv) > 2:
+    if len(sys.argv) > 1:
         config_path = sys.argv[1]
-        input_data_path = sys.argv[2]
         
-        # Load input data from pickle file
-        with open(input_data_path, 'rb') as f:
-            input_data = pickle.load(f)
-        
-        # Transform data
-        transformed_data = main(config_path, input_data)
-        
+        # If input path is provided
+        if len(sys.argv) > 2:
+            input_data_path = sys.argv[2]
+            transformed_data = main(config_path, input_data_path)
+        else:
+            transformed_data = main(config_path)
+            
         # If output path is provided, save the results
         if len(sys.argv) > 3:
             output_path = sys.argv[3]

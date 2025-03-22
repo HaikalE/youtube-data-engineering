@@ -1,0 +1,68 @@
+# YouTube Trending Analysis Configuration
+
+# YouTube API settings
+youtube_api:
+  api_service_name: "youtube"
+  api_version: "v3"
+  region_code: "US"  # Primary region (will try others if this fails)
+  max_results: 50
+  categories:
+    - id: 0
+      name: "All"
+    - id: 1
+      name: "Film & Animation"
+    - id: 2
+      name: "Autos & Vehicles"
+    - id: 10
+      name: "Music"
+    - id: 15
+      name: "Pets & Animals"
+    - id: 17
+      name: "Sports"
+    - id: 20
+      name: "Gaming"
+    - id: 22
+      name: "People & Blogs"
+    - id: 23
+      name: "Comedy"
+    - id: 24
+      name: "Entertainment"
+    - id: 25
+      name: "News & Politics"
+    - id: 26
+      name: "Howto & Style"
+    - id: 27
+      name: "Education"
+    - id: 28
+      name: "Science & Technology"
+
+# Database settings
+database:
+  type: "sqlite"  # Use "sqlite" for local development or "postgres" for production
+  host: "localhost"
+  port: 5432
+  database: "youtube_trending"
+  username: "postgres"
+  # password is set via DB_PASSWORD environment variable
+
+# AWS settings
+aws:
+  region_name: "us-east-1"
+  s3_bucket_name: "youtube-trending-analysis"
+  raw_data_prefix: "raw/"
+  processed_data_prefix: "processed/"
+  analysis_prefix: "analysis/"
+  dashboard_prefix: "dashboard/"
+
+# Airflow settings
+airflow:
+  schedule_interval: "@daily"  # Run once per day
+  catchup: false
+  max_active_runs: 1
+  concurrency: 2
+
+# Dashboard settings
+dashboard:
+  host: "0.0.0.0"  # Bind to all interfaces to access from Windows
+  port: 8050
+  debug: true

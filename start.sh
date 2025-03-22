@@ -160,36 +160,38 @@ elif [ "$1" == "dashboard" ]; then
 elif [ "$1" == "pipeline" ]; then
     # Run the pipeline once without Airflow
     echo -e "\n${YELLOW}Running the pipeline manually...${NC}"
+    
+    # Create data directory if it doesn't exist
+    mkdir -p data
+    
     echo -e "${BLUE}1. Extracting data...${NC}"
     python3 -m scripts.extract config/config.yaml
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}✗ Extraction failed${NC}"
-        exit 1
+    
+    # Store the extracted data to a file
+    RAW_DATA="data/raw_data.pkl"
+    if [ -f "raw_data.pkl" ]; then
+        mv raw_data.pkl $RAW_DATA
     fi
     
     echo -e "${BLUE}2. Transforming data...${NC}"
-    python3 -m scripts.transform config/config.yaml
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}✗ Transformation failed${NC}"
-        exit 1
+    python3 -m scripts.transform config/config.yaml $RAW_DATA
+    
+    # Store the processed data to a file
+    PROCESSED_DATA="data/processed_data.pkl"
+    if [ -f "processed_data.pkl" ]; then
+        mv processed_data.pkl $PROCESSED_DATA
     fi
     
     echo -e "${BLUE}3. Loading data...${NC}"
-    python3 -m scripts.load config/config.yaml
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}✗ Loading failed${NC}"
-        exit 1
-    fi
+    python3 -m scripts.load config/config.yaml $RAW_DATA $PROCESSED_DATA
     
     echo -e "${BLUE}4. Analyzing data...${NC}"
-    python3 -m scripts.analyze config/config.yaml
-    if [ $? -ne 0 ]; then
-        echo -e "${RED}✗ Analysis failed${NC}"
-        exit 1
-    fi
+    python3 -m scripts.analyze config/config.yaml $PROCESSED_DATA
     
     echo -e "${GREEN}✓ Pipeline execution completed successfully${NC}"
     
+
+
 elif [ "$1" == "stop" ]; then
     # Stop all running components
     echo -e "\n${YELLOW}Stopping all components...${NC}"
