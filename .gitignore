@@ -1,1 +1,34 @@
-.qodo
+# Virtual environments
+airflow_env/
+*venv*/
+
+# Database files
+*.db
+*.db.backup
+
+# Logs
+logs/
+
+# Cache
+cache/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Data (kecuali sampel kecil jika diperlukan)
+data/*
+!data/sample/
+
+# Environment variables dan config dengan credential
+.env
+config/sensitive_config.yaml
+
+# Airflow generated files
+airflow-webserver.pid
+airflow.cfg
+airflow.db
+webserver_config.py
+
+# Temporary files
+*.tmp
+.DS_Store

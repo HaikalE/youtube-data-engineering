@@ -57,7 +57,36 @@ class DatabaseHandler:
         """
         try:
             if self.db_type == 'sqlite':
-                return create_engine(f'sqlite:///{self.database}.db')
+                # Perbaikan: Menggunakan path absolut untuk mencari root proyek
+                
+                # Metode 1: Gunakan environment variable jika ada
+                db_path = os.environ.get('YOUTUBE_DB_PATH')
+                
+                if not db_path:
+                    # Metode 2: Dapatkan lokasi file db_utils.py
+                    current_file = os.path.abspath(__file__)
+                    # Dapatkan direktori utils
+                    utils_dir = os.path.dirname(current_file)
+                    # Dapatkan root proyek (parent dari utils)
+                    project_root = os.path.dirname(utils_dir)
+                    
+                    # Buat path ke file database di root proyek
+                    db_path = os.path.join(project_root, f"{self.database}.db")
+                
+                # Log database path untuk debugging
+                logger.info(f"SQLite database path: {db_path}")
+                
+                # Periksa apakah direktori ada dan kita punya akses tulis
+                db_dir = os.path.dirname(db_path)
+                if not os.path.exists(db_dir):
+                    logger.info(f"Creating database directory: {db_dir}")
+                    os.makedirs(db_dir, exist_ok=True)
+                
+                if not os.access(db_dir, os.W_OK):
+                    logger.warning(f"No write access to database directory: {db_dir}")
+                
+                return create_engine(f'sqlite:///{db_path}')
+                
             elif self.db_type == 'postgres':
                 if self.password:
                     return create_engine(
@@ -170,6 +199,15 @@ class DatabaseHandler:
         Create all defined tables in the database if they don't exist.
         """
         try:
+            # Debug info about database connection
+            if self.db_type == 'sqlite':
+                db_url = str(self.engine.url)
+                db_path = db_url.replace('sqlite:///', '')
+                logger.info(f"Creating tables in database: {db_path}")
+                logger.info(f"Database file exists: {os.path.exists(db_path)}")
+                logger.info(f"Database directory exists: {os.path.exists(os.path.dirname(db_path))}")
+                logger.info(f"Have write permission: {os.access(os.path.dirname(db_path), os.W_OK)}")
+            
             self.metadata.create_all(self.engine)
             logger.info("Database tables created successfully.")
         except Exception as e:

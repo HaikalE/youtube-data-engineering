@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from collections import Counter
 import os
+import tempfile
 from sqlalchemy import text
 
 from utils.s3_utils import S3Handler
@@ -472,8 +473,21 @@ class YouTubeAnalyzer:
         """
         logger.info("Creating visualizations...")
         
-        # Create output directory if it doesn't exist
-        os.makedirs(output_dir, exist_ok=True)
+        # Try to create output directory with fallback options
+        try:
+            # Try using specified directory
+            os.makedirs(output_dir, exist_ok=True)
+        except PermissionError:
+            # If permission error, try using a directory in user's home
+            try:
+                home_dir = os.path.expanduser("~")
+                output_dir = os.path.join(home_dir, "youtube_trending_visualizations")
+                logger.info(f"Permission error with original directory, using: {output_dir}")
+                os.makedirs(output_dir, exist_ok=True)
+            except PermissionError:
+                # If still permission error, use temporary directory
+                output_dir = tempfile.mkdtemp()
+                logger.info(f"Using temporary directory for visualizations: {output_dir}")
         
         # Combine all DataFrames
         combined_df = pd.concat(data.values(), ignore_index=True)
@@ -671,12 +685,13 @@ class YouTubeAnalyzer:
         
         logger.info(f"Visualizations saved to {output_dir}")
     
-    def run_analysis(self, data: Dict[int, pd.DataFrame]) -> Dict:
+    def run_analysis(self, data: Dict[int, pd.DataFrame], output_dir: str = None) -> Dict:
         """
         Run complete analysis on trending data.
         
         Args:
             data (Dict[int, pd.DataFrame]): Dictionary of DataFrames by category
+            output_dir (str, optional): Directory to save visualizations. Default is None.
             
         Returns:
             Dict: Complete analysis results
@@ -701,7 +716,13 @@ class YouTubeAnalyzer:
         }
         
         # Create visualizations
-        self.create_visualizations(data, results)
+        try:
+            if output_dir:
+                self.create_visualizations(data, results, output_dir)
+            else:
+                self.create_visualizations(data, results)
+        except Exception as e:
+            logger.warning(f"Error creating visualizations: {str(e)}")
         
         # Upload analysis results to S3
         s3_uri = self.s3_handler.upload_analysis_results(results, datetime.now().strftime('%Y%m%d%H%M%S'))

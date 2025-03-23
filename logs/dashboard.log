@@ -1,12 +1,10 @@
-2025-03-23 11:41:57,974 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
+2025-03-23 14:33:10,485 - utils.db_utils - INFO - SQLite database path: /home/haikal/youtube_trending_analysis/youtube_trending.db
+2025-03-23 14:33:11,584 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
 Dash is running on http://0.0.0.0:8050/
 
-2025-03-23 11:41:57,988 - dash.dash - INFO - Dash is running on http://0.0.0.0:8050/
+2025-03-23 14:33:11,597 - dash.dash - INFO - Dash is running on http://0.0.0.0:8050/
 
  * Serving Flask app 'app'
  * Debug mode: on
-2025-03-23 11:42:01,149 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
-/home/haikal/youtube_trending_analysis/dashboard/app.py:84: RemovedIn20Warning:
-
-Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
-
+Address already in use
+Port 8050 is in use by another program. Either identify and stop that program, or start the server with a different port.
