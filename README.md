@@ -8,13 +8,6 @@
 A comprehensive data engineering solution for extracting, processing, analyzing, and visualizing YouTube trending videos data with automated workflows and insightful analytics.
 
 ## Dashboard Showcase
-
-<p align="center">
-  <img src="dashboard/assets/dashboard-preview.png" alt="Dashboard Preview" width="850px">
-  <br>
-  <em>Interactive dashboard showing real-time insights from YouTube trending videos data</em>
-</p>
-
 ## Project Overview
 
 This project creates an end-to-end data pipeline to collect trending videos from YouTube, process the data to extract meaningful insights, store it efficiently across multiple systems, and present the results through an interactive dashboard. The entire workflow is automated and scheduled using Apache Airflow, with integration to cloud storage via Amazon S3.
@@ -29,13 +22,6 @@ This project creates an end-to-end data pipeline to collect trending videos from
 - **Production-Ready Architecture**: Well-structured, maintainable, and extensible codebase
 
 ## Architecture
-
-<p align="center">
-  <img src="dashboard/assets/architecture.png" alt="Architecture Diagram" width="750px">
-  <br>
-  <em>Data flow architecture from extraction to visualization</em>
-</p>
-
 ### System Components
 
 1. **Data Sources**:
