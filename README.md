@@ -223,14 +223,6 @@ This project implements several advanced technical concepts:
 - **Optimized Storage**: Parquet formats for efficient data storage and retrieval
 - **Containerization-Ready**: Structure supports easy Docker deployment
 - **Data Validation**: Schema verification and error handling at each pipeline stage
-
-## Contact
-
-For questions or feedback about this project, please reach out:
-- Email: your.email@example.com
-- GitHub: [Your GitHub Profile](https://github.com/yourusername)
-- LinkedIn: [Your LinkedIn Profile](https://linkedin.com/in/yourusername)
-
 ---
 
 <p align="center">
