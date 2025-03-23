@@ -60,22 +60,22 @@ The interactive dashboard provides comprehensive analytics through multiple spec
 
 ### Category Analysis
 <p align="center">
-  <img src="dashboard/assets/category_analysis.png" alt="Category Analysis" width="750px">
-  <br>
+  <img src="https://github.com/user-attachments/assets/b47d41eb-46ae-4e42-82a6-8177bd4b6d12" alt="Category Analysis" width="750px">
+    <br>
   <em>Distribution of trending videos across content categories, top hashtags, and leading channels</em>
 </p>
 
 ### Content Analysis
 <p align="center">
-  <img src="dashboard/assets/content_analysis.png" alt="Content Analysis" width="750px">
-  <br>
+  <img src="https://github.com/user-attachments/assets/eb0a54ba-0d1e-4906-a924-4e528cd14f70" alt="Content Analysis" width="750px">
+    <br>
   <em>Performance metrics by video attributes like length, publishing time, and format</em>
 </p>
 
 ### Top Performers
 <p align="center">
-  <img src="dashboard/assets/top_performers.png" alt="Top Performers" width="750px">
-  <br>
+  <img src="https://github.com/user-attachments/assets/00887941-81bc-4239-b995-33c78afa82b8" alt="Top Performers" width="750px">
+    <br>
   <em>Highest-ranking trending videos by engagement rates and visibility metrics</em>
 </p>
 
