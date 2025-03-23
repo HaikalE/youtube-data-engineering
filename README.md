@@ -166,6 +166,20 @@ The interactive dashboard offers multiple analysis views:
 - **Channel Leaderboard**: Top channels by various metrics
 - **Content Feature Analysis**: Impact of video attributes on performance
 
+## Dashboard Screenshots
+
+### Category Analysis
+![Category Analysis](dashboard/assets/category_analysis.png)
+*The Category Analysis view shows the distribution of trending videos across different content categories, top trending hashtags, and the most successful channels in each category. This provides insight into which content types are currently performing best on YouTube.*
+
+### Content Analysis
+![Content Analysis](dashboard/assets/content_analysis.png)
+*The Content Analysis view demonstrates the impact of video attributes like length, publishing time, and format on performance metrics. This helps content creators optimize their video strategies for maximum visibility and engagement.*
+
+### Top Performers
+![Top Performers](dashboard/assets/top_performers.png)
+*The Top Performers view showcases the highest-ranking videos by various metrics including views per hour, engagement rate, and total views. This leaderboard helps identify what specific content is trending and why.*
+
 ## Project Structure
 
 ```
