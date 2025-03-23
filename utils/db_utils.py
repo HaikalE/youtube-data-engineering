@@ -8,7 +8,7 @@ Utilities for interacting with the database.
 import os
 import pandas as pd
 import sqlalchemy
-from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Float, DateTime, JSON, text
+from sqlalchemy import create_engine, MetaData, Table, Column, Integer, String, Float, DateTime, JSON, text, Boolean
 import logging
 from typing import Dict, List, Optional, Union
 
@@ -94,6 +94,8 @@ class DatabaseHandler:
             Column('view_count', Integer),
             Column('like_count', Integer),
             Column('comment_count', Integer),
+            # Added duration column to match the data schema
+            Column('duration', String),
             Column('duration_seconds', Integer),
             Column('length_category', String),
             Column('hours_since_published', Float),
@@ -101,10 +103,17 @@ class DatabaseHandler:
             Column('like_view_ratio', Float),
             Column('comment_view_ratio', Float),
             Column('thumbnail_url', String),
+            # Added missing columns from the DataFrame
+            Column('description', String),
             Column('tags', JSON),
+            Column('tags_list', JSON),
             Column('title_hashtags', JSON),
             Column('description_hashtags', JSON),
-            Column('all_hashtags', JSON)
+            Column('all_hashtags', JSON),
+            Column('title_length', Integer),
+            Column('title_word_count', Integer),
+            Column('has_description', Boolean),
+            Column('description_length', Integer)
         )
         
         # Channel statistics table
@@ -179,14 +188,9 @@ class DatabaseHandler:
             data = df.copy()
             
             # Convert JSON columns to proper format
-            json_columns = ['tags_list', 'title_hashtags', 'description_hashtags', 'all_hashtags']
+            json_columns = ['tags_list', 'title_hashtags', 'description_hashtags', 'all_hashtags', 'tags']
             for col in json_columns:
                 if col in data.columns:
-                    # Rename 'tags_list' to 'tags' for the database
-                    if col == 'tags_list':
-                        data = data.rename(columns={'tags_list': 'tags'})
-                        col = 'tags'
-                    
                     # Convert lists to JSON strings for SQLite
                     if self.db_type == 'sqlite':
                         import json

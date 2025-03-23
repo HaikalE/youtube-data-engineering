@@ -1,106 +1,480 @@
-/* Main Dashboard Styles */
+/* YouTube Trending Analysis Dashboard - Enhanced Styles */
 
+:root {
+    --yt-red: #FF0000;
+    --yt-red-hover: #D60000;
+    --yt-dark: #282828;
+    --yt-gray: #606060;
+    --yt-light-gray: #E5E5E5;
+    --yt-blue: #3EA6FF;
+    --yt-green: #2BA640;
+    --yt-bg: #F9F9F9;
+    --shadow-sm: 0 2px 5px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.15);
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: a2px;
+}
+
+/* Global styles */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f9f9fa;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--yt-bg);
+    color: var(--yt-dark);
+    line-height: 1.6;
 }
 
-/* Header Styles */
-.display-4 {
-    color: #1a73e8;
-    font-weight: 600;
+.dashboard-container {
+    padding: 0;
+    max-width: 100%;
 }
 
-.lead {
-    color: #5f6368;
+/* Header styles */
+.dashboard-header {
+    background-color: white;
+    border-bottom: 1px solid var(--yt-light-gray);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
 }
 
-/* Card Styles */
-.card {
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    border: none;
-    transition: transform 0.2s;
-    margin-bottom: 20px;
+.header-content {
+    display: flex;
+    align-items: center;
 }
 
-.card:hover {
+.youtube-logo {
+    height: 40px;
+    margin-right: 1rem;
+}
+
+.header-title {
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--yt-dark);
+}
+
+.header-subtitle {
+    color: var(--yt-gray);
+    margin: 0 0 0 1rem;
+    font-size: 1rem;
+}
+
+.batch-info {
+    color: var(--yt-gray);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+/* Filter section */
+.filters-section {
+    background-color: white;
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    margin: 0 1rem 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.form-select,
+.form-control {
+    border: 1px solid var(--yt-light-gray);
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+}
+
+.form-select:focus,
+.form-control:focus {
+    border-color: var(--yt-blue);
+    box-shadow: 0 0 0 0.2rem rgba(62, 166, 255, 0.25);
+}
+
+.views-slider .rc-slider-track {
+    background-color: var(--yt-red);
+}
+
+.views-slider .rc-slider-handle {
+    border-color: var(--yt-red);
+}
+
+.date-picker .DateInput_input {
+    font-size: 0.9rem;
+    padding: 0.375rem 0.75rem;
+}
+
+/* Stats cards */
+.stats-section {
+    margin: 0 1rem 1.5rem;
+}
+
+.stats-card {
+    background-color: white;
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stats-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
+}
+
+.stats-content {
+    display: flex;
+    align-items: center;
+}
+
+.stats-icon {
+    font-size: 2rem;
+    margin-right: 1rem;
+    color: var(--yt-red);
+}
+
+.stats-text {
+    flex: 1;
+}
+
+.stats-value {
+    font-size: 1.8rem;
+    font-weight: 500;
+    margin: 0;
+    color: var(--yt-dark);
 }
 
 .card-title {
-    color: #5f6368;
-    font-weight: 600;
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+    color: var(--yt-gray);
 }
 
-.card-header {
-    background-color: #f1f3f4;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
-    font-weight: 600;
-    color: #1a73e8;
-}
-
-/* Stats Card */
-.display-6 {
-    color: #1a73e8;
-}
-
-/* Tables */
-.dash-table-container {
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.dash-spreadsheet {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
-}
-
-.dash-header {
-    background-color: #f1f3f4 !important;
-    font-weight: 600 !important;
-}
-
-/* Form Elements */
-.form-select, .form-control {
-    border-radius: 8px;
-    border: 1px solid #dadce0;
-}
-
-.form-select:focus, .form-control:focus {
-    border-color: #1a73e8;
-    box-shadow: 0 0 0 0.2rem rgba(26, 115, 232, 0.25);
-}
-
-/* Radio Items */
-.radio-items label {
-    margin-right: 15px;
-    cursor: pointer;
-}
-
-/* Graphs */
-.js-plotly-plot {
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-/* Footer */
-footer {
-    color: #5f6368;
+.trend-indicator {
     font-size: 0.9rem;
-    margin-top: 50px;
-    padding-top: 20px;
-    border-top: 1px solid #dadce0;
+    font-weight: 500;
+    margin-left: 0.5rem;
+}
+
+.trend-up {
+    color: var(--yt-green);
+}
+
+.trend-down {
+    color: var(--yt-red);
+}
+
+.trend-up::before {
+    content: "▲ ";
+}
+
+.trend-down::before {
+    content: "▼ ";
+}
+
+/* Insights section */
+.insights-section {
+    margin: 0 1rem 1.5rem;
+}
+
+.insights-card {
+    background-color: white;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 1.5rem;
+}
+
+.insights-container {
+    margin-top: 1rem;
+}
+
+.insight-card {
+    margin-bottom: 1rem;
+}
+
+.insight-inner {
+    display: flex;
+    align-items: flex-start;
+    background-color: #f8f9fa;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    height: 100%;
+    transition: background-color 0.2s;
+}
+
+.insight-inner:hover {
+    background-color: #f0f2f5;
+}
+
+.insight-icon {
+    font-size: 1.5rem;
+    color: var(--yt-red);
+    margin-right: 1rem;
+    padding-top: 0.2rem;
+}
+
+.insight-content {
+    flex: 1;
+}
+
+.insight-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+    color: var(--yt-gray);
+}
+
+.insight-data {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.insight-value {
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+.insight-metric {
+    color: var(--yt-gray);
+    font-size: 0.85rem;
+}
+
+/* Tabs section */
+.tabs-section {
+    margin: 0 1rem 1.5rem;
+}
+
+.custom-tabs {
+    border-bottom: 1px solid var(--yt-light-gray);
+    margin-bottom: 1.5rem;
+}
+
+.custom-tab {
+    font-size: 1rem;
+    padding: 0.75rem 1.5rem;
+    color: var(--yt-gray);
+    border: none;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.custom-tab:hover {
+    color: var(--yt-red);
+}
+
+.custom-tab--selected {
+    color: var(--yt-red);
+    border-bottom: 3px solid var(--yt-red);
+}
+
+.tab-content {
+    padding: 1rem 0;
+}
+
+/* Card styles */
+.card {
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    border: none;
+    margin-bottom: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.visualization-card {
+    background-color: white;
+    height: 100%;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Table styles */
+.table-card {
+    background-color: white;
+}
+
+.dash-table-container {
+    font-family: 'Roboto', sans-serif;
+}
+
+.dash-spreadsheet-container {
+    --accent: var(--yt-red) !important;
+}
+
+.dash-spreadsheet td, .dash-spreadsheet th {
+    font-family: 'Roboto', sans-serif !important;
+}
+
+.dash-spreadsheet th {
+    color: var(--yt-dark) !important;
+    font-weight: 500 !important;
+}
+
+/* Analysis section */
+.analysis-card {
+    background-color: white;
+}
+
+.highlight-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.highlight-card {
+    background-color: #f8f9fa;
+    border-radius: var(--radius-sm);
+    padding: 1rem;
+    height: 100%;
+    transition: transform 0.2s;
+}
+
+.highlight-card:hover {
+    transform: translateY(-3px);
+}
+
+.highlight-card h5 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--yt-gray);
+    margin: 0 0 0.75rem;
+    border-bottom: 1px solid var(--yt-light-gray);
+    padding-bottom: 0.5rem;
+}
+
+.highlight-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+    color: var(--yt-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.highlight-value {
+    font-size: 1.2rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem;
+    color: var(--yt-red);
+}
+
+.highlight-detail {
+    font-size: 0.85rem;
+    color: var(--yt-gray);
+    margin: 0;
+}
+
+.highlight-empty {
+    color: var(--yt-gray);
+    font-style: italic;
+    padding: 1rem 0;
+}
+
+/* Export section */
+.export-card {
+    background-color: white;
+}
+
+.export-options .btn {
+    border-radius: var(--radius-md);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.export-message {
+    padding: 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.9rem;
+}
+
+.export-message.success {
+    background-color: rgba(43, 166, 64, 0.1);
+    color: var(--yt-green);
+}
+
+.export-message.error {
+    background-color: rgba(255, 0, 0, 0.1);
+    color: var(--yt-red);
+}
+
+/* Footer styles */
+.dashboard-footer {
+    background-color: white;
+    border-top: 1px solid var(--yt-light-gray);
+    padding: 1.5rem 2rem;
+    margin-top: 2rem;
+}
+
+.footer-content {
+    text-align: center;
+}
+
+.footer-text {
+    color: var(--yt-gray);
+    margin: 0;
+}
+
+.footer-text.small {
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+/* Sort options */
+.sort-options .form-check-inline {
+    margin-right: 1rem;
+}
+
+.sort-options .form-check-label {
+    color: var(--yt-gray);
+    font-size: 0.9rem;
 }
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .display-4 {
-        font-size: 2rem;
+    .dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
     }
     
-    .card {
-        margin-bottom: 15px;
+    .header-content {
+        margin-bottom: 1rem;
     }
+    
+    .stats-card,
+    .insight-card {
+        margin-bottom: 1rem;
+    }
+    
+    .insight-inner {
+        flex-direction: column;
+    }
+    
+    .insight-icon {
+        margin-bottom: 0.5rem;
+    }
+    
+    .highlight-container {
+        flex-direction: column;
+    }
+    
+    .highlight-card {
+        margin-bottom: 1rem;
+    }
+}
+
+/* Dark mode considerations (future enhancement) */
+@media (prefers-color-scheme: dark) {
+    /* Dark mode styles would go here */
 }

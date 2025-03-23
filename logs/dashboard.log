@@ -1,12 +1,22 @@
-2025-03-22 23:55:25,754 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
+2025-03-23 10:09:55,028 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
 Dash is running on http://0.0.0.0:8050/
 
-2025-03-22 23:55:25,765 - dash.dash - INFO - Dash is running on http://0.0.0.0:8050/
+2025-03-23 10:09:55,041 - dash.dash - INFO - Dash is running on http://0.0.0.0:8050/
 
  * Serving Flask app 'app'
  * Debug mode: on
-2025-03-22 23:55:28,219 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
-/home/haikal/youtube_trending_analysis/dashboard/app.py:71: RemovedIn20Warning:
+2025-03-23 10:09:57,429 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
+/home/haikal/youtube_trending_analysis/dashboard/app.py:84: RemovedIn20Warning:
+
+Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+
+2025-03-23 10:13:23,346 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
+/home/haikal/youtube_trending_analysis/dashboard/app.py:75: RemovedIn20Warning:
+
+Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
+
+2025-03-23 10:13:45,262 - utils.s3_utils - INFO - Bucket youtube-trending-analysis exists.
+/home/haikal/youtube_trending_analysis/dashboard/app.py:75: RemovedIn20Warning:
 
 Deprecated API features detected! These feature(s) are not compatible with SQLAlchemy 2.0. To prevent incompatible upgrades prior to updating applications, ensure requirements files are pinned to "sqlalchemy<2.0". Set environment variable SQLALCHEMY_WARN_20=1 to show all deprecation warnings.  Set environment variable SQLALCHEMY_SILENCE_UBER_WARNING=1 to silence this message. (Background on SQLAlchemy 2.0 at: https://sqlalche.me/e/b8d9)
 

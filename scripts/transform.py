@@ -83,24 +83,30 @@ class YouTubeTransformer:
         # Make a copy to avoid modifying the original
         df_transformed = df.copy()
         
-        # Convert publish_time and extracted_at to datetime and ensure both are timezone-aware
-        # Force both to be UTC to avoid timezone comparison issues
+        # Convert publish_time and extracted_at to datetime and handle timezone issues
         try:
-            # First convert to datetime
+            # First convert both to datetime
             df_transformed['publish_time'] = pd.to_datetime(df_transformed['publish_time'])
             df_transformed['extracted_at'] = pd.to_datetime(df_transformed['extracted_at'])
             
-            # Handle timezone - make sure both are naive (no timezone)
+            # FIX: Properly handle timezone - make both timezone-naive to avoid comparison issues
             if df_transformed['publish_time'].dt.tz is not None:
+                # If publish_time has timezone, convert it to naive by replacing tz with None
                 df_transformed['publish_time'] = df_transformed['publish_time'].dt.tz_localize(None)
-            
+                
             if df_transformed['extracted_at'].dt.tz is not None:
+                # If extracted_at has timezone, convert it to naive by replacing tz with None
                 df_transformed['extracted_at'] = df_transformed['extracted_at'].dt.tz_localize(None)
             
             # Calculate how long the video has been published before extraction
             df_transformed['hours_since_published'] = (
                 df_transformed['extracted_at'] - df_transformed['publish_time']
             ).dt.total_seconds() / 3600
+            
+            # Handle negative or very small values
+            df_transformed['hours_since_published'] = df_transformed['hours_since_published'].apply(
+                lambda x: max(1.0, x)  # Ensure at least 1 hour to avoid division by zero
+            )
             
         except Exception as e:
             logger.error(f"Error processing datetime fields: {str(e)}")
@@ -163,7 +169,7 @@ class YouTubeTransformer:
             lambda row: row['title_hashtags'] + row['description_hashtags'], axis=1
         )
         
-        # Convert tags from JSON string to list
+        # Convert tags from JSON string to list if it's a string
         df_with_features['tags_list'] = df_with_features['tags'].apply(
             lambda x: json.loads(x) if isinstance(x, str) and x else []
         )
