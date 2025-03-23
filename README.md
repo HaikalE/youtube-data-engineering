@@ -7,7 +7,13 @@
 
 A comprehensive data engineering solution for extracting, processing, analyzing, and visualizing YouTube trending videos data with automated workflows and insightful analytics.
 
-![Dashboard Preview](dashboard/assets/dashboard-preview.png)
+## Dashboard Showcase
+
+<p align="center">
+  <img src="dashboard/assets/dashboard-preview.png" alt="Dashboard Preview" width="850px">
+  <br>
+  <em>Interactive dashboard showing real-time insights from YouTube trending videos data</em>
+</p>
 
 ## Project Overview
 
@@ -24,7 +30,11 @@ This project creates an end-to-end data pipeline to collect trending videos from
 
 ## Architecture
 
-![Architecture Diagram](dashboard/assets/architecture.png)
+<p align="center">
+  <img src="dashboard/assets/architecture.png" alt="Architecture Diagram" width="750px">
+  <br>
+  <em>Data flow architecture from extraction to visualization</em>
+</p>
 
 ### System Components
 
@@ -43,6 +53,31 @@ This project creates an end-to-end data pipeline to collect trending videos from
 4. **Visualization**:
    - Plotly Dash for interactive dashboard with real-time filtering
    - Matplotlib/Seaborn for static visualizations and reports
+
+## Dashboard Views
+
+The interactive dashboard provides comprehensive analytics through multiple specialized views:
+
+### Category Analysis
+<p align="center">
+  <img src="dashboard/assets/category_analysis.png" alt="Category Analysis" width="750px">
+  <br>
+  <em>Distribution of trending videos across content categories, top hashtags, and leading channels</em>
+</p>
+
+### Content Analysis
+<p align="center">
+  <img src="dashboard/assets/content_analysis.png" alt="Content Analysis" width="750px">
+  <br>
+  <em>Performance metrics by video attributes like length, publishing time, and format</em>
+</p>
+
+### Top Performers
+<p align="center">
+  <img src="dashboard/assets/top_performers.png" alt="Top Performers" width="750px">
+  <br>
+  <em>Highest-ranking trending videos by engagement rates and visibility metrics</em>
+</p>
 
 ## Visualizations & Insights
 
@@ -154,31 +189,6 @@ The project provides comprehensive insights, including:
 4. **Content Optimization**: Ideal video length, publishing time, and format
 5. **Engagement Patterns**: View-to-like ratios, comment rates, views per hour
 6. **Hashtag Effectiveness**: Most successful hashtags and tags
-
-## Dashboard Features
-
-The interactive dashboard offers multiple analysis views:
-
-- **Category Distribution**: Breakdown of videos by category with filtering
-- **Time Trends**: Trending patterns by day and hour
-- **Top Videos Table**: Sortable list of top-performing videos
-- **Engagement Charts**: Visualization of key engagement metrics
-- **Channel Leaderboard**: Top channels by various metrics
-- **Content Feature Analysis**: Impact of video attributes on performance
-
-## Dashboard Screenshots
-
-### Category Analysis
-![Category Analysis](dashboard/assets/category_analysis.png)
-*The Category Analysis view shows the distribution of trending videos across different content categories, top trending hashtags, and the most successful channels in each category. This provides insight into which content types are currently performing best on YouTube.*
-
-### Content Analysis
-![Content Analysis](dashboard/assets/content_analysis.png)
-*The Content Analysis view demonstrates the impact of video attributes like length, publishing time, and format on performance metrics. This helps content creators optimize their video strategies for maximum visibility and engagement.*
-
-### Top Performers
-![Top Performers](dashboard/assets/top_performers.png)
-*The Top Performers view showcases the highest-ranking videos by various metrics including views per hour, engagement rate, and total views. This leaderboard helps identify what specific content is trending and why.*
 
 ## Project Structure
 
