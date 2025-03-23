@@ -1,40 +1,45 @@
-# Core dependencies
-apache-airflow==2.7.1
+# Core data processing
+pandas==2.1.0
+numpy==1.25.2
+pyarrow==10.0.1
+matplotlib==3.7.2
+seaborn==0.12.2
+
+# Dashboard with all required extras
+dash[diskcache]==2.13.0
+plotly==5.16.1
+dash-bootstrap-components==1.4.1
+diskcache==5.6.1
+multiprocess>=0.70.14
+
+# AWS
+boto3==1.28.35
+botocore==1.31.85
+s3transfer==0.6.2
+
+# Database
 sqlalchemy>=1.4.24,<2.0
-flask>=2.2,<2.3
-flask-appbuilder==4.3.6  # Pinned to match airflow 2.7.1
-botocore==1.31.85  # Pinned version for compatibility
-boto3==1.28.35  # Uses botocore 1.31.85 and s3transfer 0.6.2
-s3transfer==0.6.2  # Pinned for compatibility with boto3 1.28.35
+psycopg2-binary==2.9.7
+
+# API
 google-api-python-client==2.97.0
 google-auth==2.22.0
 
-# Data processing
-pandas==2.1.0
-numpy==1.25.2
+# Time handling
+isodate==0.6.1
+python-dateutil==2.9.0.post0
 
-# Visualization
-matplotlib==3.7.2
-seaborn==0.12.2
-dash==2.13.0
-plotly==5.16.1
-dash-bootstrap-components>=1.4.0
-
-# Database
-psycopg2-binary==2.9.7
-
-# Utils
-pytest==7.4.0
+# Utilities
 pyyaml==6.0.1
 python-dotenv==1.0.0
-diskcache>=5.4.0
+tabulate==0.9.0
+pytest==7.4.0
+requests==2.31.0
 
-# Data formats
-pyarrow>=10.0.0
+# Option A: Remove all Airflow - uncomment this if you don't need Airflow
+# (This is recommended for just running the dashboard)
 
-# Comment out problematic airflow providers
-# Uncomment and install separately if needed
-# apache-airflow-providers-fab==1.4.1  
-# apache-airflow-providers-smtp==1.8.1
-# apache-airflow-providers-common-io==1.5.1
-# apache-airflow-providers-common-compat==1.5.1
+# Option B: Update Airflow - uncomment these if you need Airflow
+apache-airflow==2.9.0
+apache-airflow-providers-http==4.12.0
+apache-airflow-providers-sqlite==3.8.2
