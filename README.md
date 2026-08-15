@@ -1,230 +1,113 @@
-# YouTube Trending Videos Data Engineering Project
+# YouTube Trending Analytics Data Pipeline
 
-![GitHub](https://img.shields.io/badge/license-MIT-blue)
-![Python](https://img.shields.io/badge/python-3.8+-green)
-![Airflow](https://img.shields.io/badge/apache%20airflow-2.9.0-orange)
-![Dash](https://img.shields.io/badge/dash-2.13.0-blue)
+End-to-end data engineering project that collects YouTube trending-video data, transforms it with Python, persists raw/processed outputs, and exposes the results through a Plotly Dash dashboard.
 
-A comprehensive data engineering solution for extracting, processing, analyzing, and visualizing YouTube trending videos data with automated workflows and insightful analytics.
-
-## Dashboard Showcase
-## Project Overview
-
-This project creates an end-to-end data pipeline to collect trending videos from YouTube, process the data to extract meaningful insights, store it efficiently across multiple systems, and present the results through an interactive dashboard. The entire workflow is automated and scheduled using Apache Airflow, with integration to cloud storage via Amazon S3.
-
-### Key Features
-
-- **End-to-End ETL Pipeline**: Extract data from YouTube API, transform it to derive useful metrics, and load it into PostgreSQL and Amazon S3
-- **Fully Automated Workflow**: Apache Airflow DAGs for scheduled data collection and processing
-- **Advanced Video Analytics**: Identify trends, patterns, and engagement metrics across categories
-- **Interactive Dashboard**: Visualize data with Plotly Dash with filtering and exploration capabilities
-- **Cloud Integration**: Amazon S3 for reliable data storage and retrieval
-- **Production-Ready Architecture**: Well-structured, maintainable, and extensible codebase
+The project was built to practice the parts of a data platform that sit between an API call and a dashboard: repeatable extraction, transformation, storage, orchestration, validation, and operational troubleshooting.
 
 ## Architecture
-### System Components
 
-1. **Data Sources**:
-   - YouTube Data API v3 for trending videos across multiple categories and regions
+```text
+YouTube Data API v3
+        |
+        v
+Python extraction
+        |
+        +--------------------> Amazon S3
+        |                     raw / processed artifacts
+        v
+Transformation and validation
+        |
+        v
+PostgreSQL / local development storage
+        |
+        +--------------------> analytics scripts
+        |
+        v
+Plotly Dash dashboard
 
-2. **Data Processing**:
-   - Python-based ETL scripts for extraction, transformation, and loading
-   - Apache Airflow for workflow orchestration and scheduling
-   - Advanced analytics for engagement metrics and content optimization
-
-3. **Storage**:
-   - PostgreSQL/SQLite database for structured data and efficient queries
-   - Amazon S3 for raw, processed, and analysis data using optimized formats
-
-4. **Visualization**:
-   - Plotly Dash for interactive dashboard with real-time filtering
-   - Matplotlib/Seaborn for static visualizations and reports
-
-## Dashboard Views
-
-The interactive dashboard provides comprehensive analytics through multiple specialized views:
-
-### Category Analysis
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/b47d41eb-46ae-4e42-82a6-8177bd4b6d12" alt="Category Analysis" width="750px">
-    <br>
-  <em>Distribution of trending videos across content categories, top hashtags, and leading channels</em>
-</p>
-
-### Content Analysis
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/eb0a54ba-0d1e-4906-a924-4e528cd14f70" alt="Content Analysis" width="750px">
-    <br>
-  <em>Performance metrics by video attributes like length, publishing time, and format</em>
-</p>
-
-### Top Performers
-<p align="center">
-  <img src="https://github.com/user-attachments/assets/00887941-81bc-4239-b995-33c78afa82b8" alt="Top Performers" width="750px">
-    <br>
-  <em>Highest-ranking trending videos by engagement rates and visibility metrics</em>
-</p>
-
-## Visualizations & Insights
-
-The project generates multiple visualization types to provide comprehensive insights:
-
-| Visualization | Description |
-|---------------|-------------|
-| ![Category Distribution](visualizations/category_distribution.png) | Breakdown of trending videos across content categories |
-| ![Video Length vs Views](visualizations/length_vs_views.png) | Impact of video duration on view counts and engagement |
-| ![Correlation Heatmap](visualizations/correlation_heatmap.png) | Correlation between key metrics (views, likes, comments) |
-| ![Top Hashtags](visualizations/top_hashtags.png) | Most effective hashtags in trending videos |
-| ![Publication Patterns](visualizations/publication_day.png) | Optimal publishing days for maximizing visibility |
-
-## Getting Started
-
-### Prerequisites
-
-- Python 3.8+
-- PostgreSQL or SQLite
-- AWS account (for S3 integration)
-- YouTube Data API key
-
-### Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/youtube-trending-analysis.git
-   cd youtube-trending-analysis
-   ```
-
-2. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. Set up environment variables:
-   ```bash
-   export YOUTUBE_API_KEY="your_youtube_api_key"
-   export AWS_ACCESS_KEY_ID="your_aws_access_key"
-   export AWS_SECRET_ACCESS_KEY="your_aws_secret_key"
-   export DB_PASSWORD="your_database_password"
-   ```
-
-4. Update configuration in `config/config.yaml` with your specific settings
-
-### Running the Pipeline
-
-#### Using the Startup Script
-
-The project includes a convenient startup script to run different components:
-
-```bash
-# Run the complete pipeline
-./start.sh pipeline
-
-# Start the dashboard only
-./start.sh dashboard
-
-# Start Airflow for scheduled execution
-./start.sh airflow
-
-# Start all components
-./start.sh all
-
-# Stop all running components
-./start.sh stop
+Apache Airflow orchestrates the scheduled workflow.
 ```
 
-#### Manual Component Execution
+## What the project demonstrates
 
-You can also run individual components manually:
+- API-based data extraction with Python
+- modular extract / transform / load stages
+- Apache Airflow DAG orchestration
+- raw and processed object storage in Amazon S3
+- structured persistence for analytical queries
+- derived engagement metrics and category/channel analysis
+- operational checks for database and S3 data
+- interactive analytics with Plotly Dash
 
-1. Extract data from YouTube API:
-   ```bash
-   python -m scripts.extract config/config.yaml
-   ```
+## Repository structure
 
-2. Transform the raw data:
-   ```bash
-   python -m scripts.transform config/config.yaml data/raw_data.pkl
-   ```
+```text
+.
+├── config/                  pipeline configuration
+├── dags/
+│   └── youtube_trending_dag.py
+├── dashboard/
+│   ├── app.py
+│   └── assets/
+├── scripts/
+│   ├── extract.py
+│   ├── transform.py
+│   ├── load.py
+│   └── analyze.py
+├── utils/                   database and storage helpers
+├── check_data.py            local data validation helper
+├── check_db.py              database verification helper
+├── check_s3.py              S3 verification helper
+├── start.sh                 local workflow launcher
+└── requirements.txt
+```
 
-3. Load data into storage systems:
-   ```bash
-   python -m scripts.load config/config.yaml data/raw_data.pkl data/processed_data.pkl
-   ```
+## Dashboard
 
-4. Generate analytics and visualizations:
-   ```bash
-   python -m scripts.analyze config/config.yaml data/processed_data.pkl
-   ```
+The dashboard presents views for category distribution, content performance, and top-performing videos/channels.
 
-### Running the Dashboard
+![Category analysis dashboard](https://github.com/user-attachments/assets/b47d41eb-46ae-4e42-82a6-8177bd4b6d12)
 
-Start the Dash application:
+![Top performers dashboard](https://github.com/user-attachments/assets/00887941-81bc-4239-b995-33c78afa82b8)
+
+## Local setup
+
+Requirements depend on which parts of the pipeline you want to run. The full workflow expects Python, YouTube Data API credentials, database configuration, and AWS credentials for S3-backed storage.
+
+```bash
+git clone https://github.com/HaikalE/youtube-data-engineering.git
+cd youtube-data-engineering
+pip install -r requirements.txt
+```
+
+Configure the environment and `config/config.yaml`, then individual stages can be run with:
+
+```bash
+python -m scripts.extract config/config.yaml
+python -m scripts.transform config/config.yaml <raw-data-file>
+python -m scripts.load config/config.yaml <raw-data-file> <processed-data-file>
+python -m scripts.analyze config/config.yaml <processed-data-file>
+```
+
+The dashboard can be started with:
+
 ```bash
 python -m dashboard.app
 ```
 
-Access the dashboard at `http://localhost:8050`
+The repository also includes `start.sh` for launching project components in the local development environment.
 
-## Analytics Capabilities
+## Airflow
 
-The project provides comprehensive insights, including:
+`dags/youtube_trending_dag.py` defines the orchestrated workflow. Airflow is used here to make dependencies between pipeline stages explicit and to move the project beyond a manually executed sequence of scripts.
 
-1. **Category Performance**: Identifies which video categories dominate the trending section
-2. **Top Performers**: Videos with highest engagement and growth rates
-3. **Channel Analysis**: Most successful channels in trending sections
-4. **Content Optimization**: Ideal video length, publishing time, and format
-5. **Engagement Patterns**: View-to-like ratios, comment rates, views per hour
-6. **Hashtag Effectiveness**: Most successful hashtags and tags
+## Engineering notes
 
-## Project Structure
+This is a portfolio data-engineering system rather than a claim of production infrastructure. The codebase includes utilities and troubleshooting scripts created while validating S3, database, and dashboard behavior. Generated caches, compiled Python files, local databases, credentials, and runtime logs are excluded from source control.
 
-```
-.
-├── README.md                # Project documentation
-├── requirements.txt         # Python dependencies
-├── config/                  # Configuration files
-├── dags/                    # Airflow DAGs
-├── scripts/                 # Core processing scripts
-│   ├── extract.py           # YouTube API data extraction
-│   ├── transform.py         # Data transformation and feature engineering
-│   ├── load.py              # Data loading to storage systems
-│   └── analyze.py           # Data analysis and visualization
-├── utils/                   # Utility modules
-│   ├── s3_utils.py          # Amazon S3 operations
-│   └── db_utils.py          # Database operations
-├── dashboard/               # Dash web application
-├── visualizations/          # Generated visualizations
-└── tests/                   # Unit and integration tests
-```
+Areas I would harden for a production deployment include automated test coverage, secrets management, schema/version contracts, observability, retry/idempotency strategy, containerized deployment, and infrastructure-as-code.
 
-## Future Enhancements
+## Author
 
-- Natural Language Processing on video titles and descriptions
-- Sentiment analysis of comments
-- Machine learning models to predict trending potential
-- Competitor analysis for channels
-- Regional trend comparison
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Technical Implementation Details
-
-This project implements several advanced technical concepts:
-
-- **Modular Data Pipeline**: Each component (extract, transform, load, analyze) operates independently
-- **Data Transformation Pipeline**: Calculates derived metrics like engagement ratios and growth rates
-- **Robust Error Handling**: Graceful fallbacks and detailed logging throughout the pipeline
-- **Optimized Storage**: Parquet formats for efficient data storage and retrieval
-- **Containerization-Ready**: Structure supports easy Docker deployment
-- **Data Validation**: Schema verification and error handling at each pipeline stage
----
-
-<p align="center">
-  <small>Built with Python, Airflow, and Plotly Dash</small>
-</p>
+Muhammad Haikal Rahman  
+[GitHub](https://github.com/HaikalE) · [Portfolio](https://haikale.github.io) · [LinkedIn](https://www.linkedin.com/in/muhammad-haikal-rahman)
